@@ -4,21 +4,7 @@
     "description": "平台级、领域无关、可扩展的 Graph 元模型核心库",
     "type": "module",
     "main": "./index.ts",
-    "files": [
-        "*.ts",
-        "types",
-        "builder",
-        "validation",
-        "diff",
-        "query"
-    ],
-    "keywords": [
-        "graph",
-        "dag",
-        "dataflow",
-        "dependency",
-        "knowledge-graph",
-        "typescript"
-    ],
-    "license": "MIT"
+    "devDependencies": {
+        "@openspace/tsconfig": "workspace:*"
+    }
 }

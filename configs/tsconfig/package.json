@@ -1,0 +1,28 @@
+{
+    "name": "@openspace/tsconfig",
+    "version": "0.0.1",
+    "description": "可复用的 TypeScript 配置集合",
+    "type": "module",
+    "exports": {
+        "./base": "./base.json",
+        "./lib": "./lib.json",
+        "./esm": "./esm.json",
+        "./node": "./node.json",
+        "./web": "./web.json",
+        "./vite": "./vite.json",
+        "./vue": "./vue.json",
+        "./react": "./react.json",
+        "./next": "./next.json",
+        "./vitest": "./vitest.json"
+    },
+    "files": [
+        "*.json",
+        "README.md"
+    ],
+    "keywords": [
+        "typescript",
+        "tsconfig",
+        "config"
+    ],
+    "license": "MIT"
+}

@@ -1,0 +1,10 @@
+{
+    "name": "@openspace/pathe",
+    "version": "0.0.1",
+    "description": "Cross-platform path normalization and traversal",
+    "type": "module",
+    "main": "index.ts",
+    "devDependencies": {
+        "@openspace/tsconfig": "workspace:*"
+    }
+}

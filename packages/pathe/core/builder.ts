@@ -34,7 +34,10 @@ export function createBuilder(): RouteBuilder {
             for (const segment of segments) {
                 switch (segment.type) {
                     case 'static':
-                        parts.push(segment.raw);
+                        // 过滤空段（如根节点）
+                        if (segment.raw) {
+                            parts.push(segment.raw);
+                        }
                         break;
 
                     case 'dynamic':

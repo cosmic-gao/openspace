@@ -18,6 +18,8 @@ const DEFAULT_CONVENTION: FileConvention<RouteFile> = {
         'not-found',
         'default',
         'route',
+        'middleware',
+        'metadata',
     ],
     extensions: ['.tsx', '.ts', '.jsx', '.js'],
 };
@@ -89,6 +91,7 @@ export function createScanner<T extends string = RouteFile>(
         const children: RouteNode<T>[] = [];
         const slots: Record<string, RouteNode<T>> = {};
         const intercepts: RouteNode<T>[] = [];
+        let middlewarePath: string | undefined;
 
         for (const entry of entries) {
             const fullPath = join(dir, entry.name);
@@ -104,6 +107,11 @@ export function createScanner<T extends string = RouteFile>(
                 // 检查文件名是否为路由文件
                 if ((convention.files as readonly string[]).includes(name)) {
                     components[name as T] = fullPath;
+
+                    // 单独提取 middleware 路径
+                    if (name === 'middleware') {
+                        middlewarePath = fullPath;
+                    }
                 }
             } else if (entry.isDirectory()) {
                 const segment = parser.parse(entry.name);
@@ -144,6 +152,7 @@ export function createScanner<T extends string = RouteFile>(
             children,
             ...(Object.keys(slots).length > 0 ? { slots } : {}),
             ...(intercepts.length > 0 ? { intercepts } : {}),
+            ...(middlewarePath ? { middleware: middlewarePath } : {}),
         };
     }
 

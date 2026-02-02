@@ -14,7 +14,9 @@ export type RouteFile =
     | 'error'      // 错误边界
     | 'not-found'  // 404 页面
     | 'default'    // 并行路由默认状态
-    | 'route';     // API 端点
+    | 'route'      // API 端点
+    | 'middleware' // 中间件
+    | 'metadata';  // 元数据
 
 /**
  * 路由节点接口
@@ -56,6 +58,9 @@ export interface RouteNode<T extends string = RouteFile> {
 
     /** 拦截路由 */
     readonly intercepts?: ReadonlyArray<RouteNode<T>>;
+
+    /** 中间件文件路径 */
+    readonly middleware?: string;
 }
 
 /**

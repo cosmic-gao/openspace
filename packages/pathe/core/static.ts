@@ -70,10 +70,10 @@ export function createCollector(): StaticCollector {
     /**
      * 递归收集动态路由
      */
-    function collectNode<T extends string>(
+    const collectNode = <T extends string>(
         node: RouteNode<T>,
         parentSegments: RouteNode<T>['segment'][] = []
-    ): DynamicRoute[] {
+    ): DynamicRoute[] => {
         const results: DynamicRoute[] = [];
         const currentSegments = [...parentSegments, node.segment];
 

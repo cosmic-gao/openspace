@@ -64,16 +64,16 @@ export function createSorter(): RouteSorter {
     /**
      * 获取节点排序优先级
      */
-    function getPriority<T extends string>(node: RouteNode<T>): number {
+    const getPriority = <T extends string>(node: RouteNode<T>): number => {
         return SEGMENT_PRIORITY[node.segment.type];
-    }
+    };
 
     /**
      * 比较两个节点的优先级
      *
      * @returns 负数表示 a 优先，正数表示 b 优先，0 表示相等
      */
-    function compare<T extends string>(a: RouteNode<T>, b: RouteNode<T>): number {
+    const compare = <T extends string>(a: RouteNode<T>, b: RouteNode<T>): number => {
         const priorityDiff = getPriority(a) - getPriority(b);
 
         if (priorityDiff !== 0) {

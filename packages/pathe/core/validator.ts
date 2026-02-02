@@ -60,7 +60,7 @@ export interface RouteValidator {
  * ```
  */
 export function createValidator(): RouteValidator {
-    function validateNode(node: RouteNode, path: string): ValidationError[] {
+    const validateNode = (node: RouteNode, path: string): ValidationError[] => {
         const errors: ValidationError[] = [];
         const currentPath = path + (node.segment.raw ? `/${node.segment.raw}` : '');
 

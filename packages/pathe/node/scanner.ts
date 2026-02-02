@@ -82,7 +82,7 @@ export function createScanner<T extends string = RouteFile>(
     const convention = (options.convention ?? DEFAULT_CONVENTION) as FileConvention<T>;
     const parser = options.parser ?? createParser();
 
-    async function scanNode(dir: string, segmentRaw: string): Promise<RouteNode<T>> {
+    const scanNode = async (dir: string, segmentRaw: string): Promise<RouteNode<T>> => {
         const entries = await readdir(dir, { withFileTypes: true });
 
         const components: Partial<Record<T, string>> = {};

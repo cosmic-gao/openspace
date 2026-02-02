@@ -7,6 +7,9 @@
  * - `optionalCatchAll`: 可选捕获，如 `[[...slug]]` → `/shop/:slug*`
  * - `group`: 路由分组，如 `(marketing)` → 不影响 URL
  * - `parallel`: 并行路由插槽，如 `@modal` → 同一布局中并行渲染
+ * - `interceptSame`: 同级拦截，如 `(.)photo` → 拦截同级路由
+ * - `interceptParent`: 父级拦截，如 `(..)photo` → 拦截上一级路由
+ * - `interceptRoot`: 根级拦截，如 `(...)photo` → 拦截根路由
  */
 export type SegmentType =
     | 'static'
@@ -14,7 +17,10 @@ export type SegmentType =
     | 'catchAll'
     | 'optionalCatchAll'
     | 'group'
-    | 'parallel';
+    | 'parallel'
+    | 'interceptSame'
+    | 'interceptParent'
+    | 'interceptRoot';
 
 /**
  * 路由段接口
@@ -36,25 +42,11 @@ export type SegmentType =
  *   name: 'slug',
  * };
  *
- * // 捕获所有段
- * const catchAllSegment: Segment = {
- *   raw: '[...slug]',
- *   type: 'catchAll',
- *   name: 'slug',
- * };
- *
- * // 路由分组
- * const groupSegment: Segment = {
- *   raw: '(marketing)',
- *   type: 'group',
- *   name: 'marketing',
- * };
- *
- * // 并行路由
- * const parallelSegment: Segment = {
- *   raw: '@modal',
- *   type: 'parallel',
- *   name: 'modal',
+ * // 拦截路由
+ * const interceptSegment: Segment = {
+ *   raw: '(..)photo',
+ *   type: 'interceptParent',
+ *   name: 'photo',
  * };
  * ```
  */
@@ -67,4 +59,7 @@ export interface Segment {
 
     /** 提取的参数名或分组名 */
     readonly name?: string;
+
+    /** 拦截层级（拦截路由专用） */
+    readonly level?: number;
 }

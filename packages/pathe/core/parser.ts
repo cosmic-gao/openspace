@@ -28,6 +28,15 @@ const GROUP = /^\((\w+)\)$/;
 /** 并行路由正则：@name */
 const PARALLEL = /^@(\w+)$/;
 
+/** 根级拦截正则：(...)name */
+const INTERCEPT_ROOT = /^\(\.\.\.\)(\w+)$/;
+
+/** 父级拦截正则：(..)name 或 (..)(..)name 等 */
+const INTERCEPT_PARENT = /^(\(\.\.?\))+(\w+)$/;
+
+/** 同级拦截正则：(.)name */
+const INTERCEPT_SAME = /^\(\.\)(\w+)$/;
+
 /**
  * 默认段解析器
  *
@@ -36,7 +45,7 @@ const PARALLEL = /^@(\w+)$/;
  * const parser = createParser();
  * parser.parse('blog');        // { raw: 'blog', type: 'static' }
  * parser.parse('[id]');        // { raw: '[id]', type: 'dynamic', name: 'id' }
- * parser.parse('[...slug]');   // { raw: '[...slug]', type: 'catchAll', name: 'slug' }
+ * parser.parse('(..)photo');   // { raw: '(..)photo', type: 'interceptParent', name: 'photo', level: 1 }
  * ```
  */
 export function createParser(): SegmentParser {
@@ -60,6 +69,26 @@ export function createParser(): SegmentParser {
             match = raw.match(DYNAMIC);
             if (match) {
                 return { raw, type: 'dynamic', name: match[1] };
+            }
+
+            // 根级拦截：(...)photo
+            match = raw.match(INTERCEPT_ROOT);
+            if (match) {
+                return { raw, type: 'interceptRoot', name: match[1], level: Infinity };
+            }
+
+            // 同级拦截：(.)photo
+            match = raw.match(INTERCEPT_SAME);
+            if (match) {
+                return { raw, type: 'interceptSame', name: match[1], level: 0 };
+            }
+
+            // 父级拦截：(..)photo, (..)(..)photo 等
+            match = raw.match(INTERCEPT_PARENT);
+            if (match) {
+                // 计算层级：(..) 的数量
+                const level = (match[0].match(/\(\.\.\)/g) || []).length;
+                return { raw, type: 'interceptParent', name: match[2], level };
             }
 
             // 分组：(admin)

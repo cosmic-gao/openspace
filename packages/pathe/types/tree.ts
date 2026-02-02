@@ -12,7 +12,8 @@ export type RouteFile =
     | 'loading'    // 加载状态
     | 'error'      // 错误边界
     | 'not-found'  // 404 页面
-    | 'default';   // 并行路由默认状态
+    | 'default'    // 并行路由默认状态
+    | 'route';     // API 端点
 
 /**
  * 路由节点接口
@@ -32,14 +33,17 @@ export interface RouteNode {
     /** 当前节点的段定义 */
     readonly segment: Segment;
 
-    /** 节点包含的路由文件 */
-    readonly files: ReadonlyArray<RouteFile>;
+    /** 节点包含的路由文件路径映射 */
+    readonly components: Readonly<Partial<Record<RouteFile, string>>>;
 
     /** 子节点列表 */
     readonly children: ReadonlyArray<RouteNode>;
 
     /** 并行路由插槽 */
     readonly slots?: Readonly<Record<string, RouteNode>>;
+
+    /** 拦截路由 */
+    readonly intercepts?: ReadonlyArray<RouteNode>;
 }
 
 /**

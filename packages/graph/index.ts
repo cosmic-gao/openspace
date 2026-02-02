@@ -25,7 +25,7 @@ export {
     createNodeId,
     createEdgeId,
     createEndpointId,
-    createEndpointRef,
+    createConnection,
     // ID 工具函数
     endpointRefEquals,
     endpointRefToString,

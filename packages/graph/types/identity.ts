@@ -96,7 +96,7 @@ export function createEndpointId(id: string): EndpointId {
  * @param endpointId - 端点 ID
  * @returns 端点引用对象
  */
-export function createEndpointRef(
+export function createConnection(
     nodeId: NodeId,
     endpointId: EndpointId
 ): EndpointRef {
@@ -129,7 +129,7 @@ export function parseEndpointRef(str: string): EndpointRef | null {
     if (parts.length !== 2 || !parts[0] || !parts[1]) {
         return null;
     }
-    return createEndpointRef(
+    return createConnection(
         createNodeId(parts[0]),
         createEndpointId(parts[1])
     );

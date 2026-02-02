@@ -9,7 +9,7 @@ import type { GraphSchema } from '../types/schema';
 import {
     createEdgeId,
     createEndpointId,
-    createEndpointRef,
+    createConnection,
     createGraphId,
     createNodeId,
     type EdgeId,
@@ -206,8 +206,8 @@ export class GraphBuilder {
     connect<TData = unknown>(params: ConnectParams<TData>): EdgeId {
         return this.addEdge({
             type: params.type,
-            source: createEndpointRef(params.fromNode, params.fromEndpoint),
-            target: createEndpointRef(params.toNode, params.toEndpoint),
+            source: createConnection(params.fromNode, params.fromEndpoint),
+            target: createConnection(params.toNode, params.toEndpoint),
             data: params.data,
         });
     }

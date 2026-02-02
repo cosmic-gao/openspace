@@ -1,9 +1,7 @@
 import { readdir, stat } from 'node:fs/promises';
 import { join, parse as parsePath } from 'node:path';
-import type { RouteTree, RouteNode, RouteFile } from '../types/tree';
-import type { FileConvention } from '../types/convention';
-import type { SegmentParser } from '../core/parser';
-import { createParser } from '../core/parser';
+import type { FileConvention, RouteFile, RouteNode, RouteTree } from '../types';
+import { type SegmentParser, createParser } from '../core';
 
 /**
  * 默认文件约定

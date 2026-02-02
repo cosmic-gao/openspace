@@ -43,7 +43,7 @@ export interface RouteSorter {
      * @param node - 根节点
      * @returns 排序后的树（不修改原树）
      */
-    sortTree<T extends string>(node: RouteNode<T>): RouteNode<T>;
+    arrange<T extends string>(node: RouteNode<T>): RouteNode<T>;
 }
 
 /**
@@ -57,7 +57,7 @@ export interface RouteSorter {
  * const sorted = sorter.sort(node.children);
  *
  * // 递归排序整棵树
- * const sortedTree = sorter.sortTree(root);
+ * const sortedTree = sorter.arrange(root);
  * ```
  */
 export function createSorter(): RouteSorter {
@@ -89,10 +89,10 @@ export function createSorter(): RouteSorter {
             return [...nodes].sort(compare);
         },
 
-        sortTree<T extends string>(node: RouteNode<T>): RouteNode<T> {
+        arrange<T extends string>(node: RouteNode<T>): RouteNode<T> {
             // 递归排序子节点
             const sortedChildren = this.sort(node.children).map(child =>
-                this.sortTree(child)
+                this.arrange(child)
             );
 
             // 递归排序插槽
@@ -100,14 +100,14 @@ export function createSorter(): RouteSorter {
                 ? Object.fromEntries(
                     Object.entries(node.slots).map(([name, slotNode]) => [
                         name,
-                        this.sortTree(slotNode),
+                        this.arrange(slotNode),
                     ])
                 )
                 : undefined;
 
             // 递归排序拦截路由
             const sortedIntercepts = node.intercepts
-                ? node.intercepts.map(interceptNode => this.sortTree(interceptNode))
+                ? node.intercepts.map(interceptNode => this.arrange(interceptNode))
                 : undefined;
 
             return {

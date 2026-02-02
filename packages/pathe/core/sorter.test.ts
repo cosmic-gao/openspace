@@ -76,7 +76,7 @@ describe('createSorter', () => {
         });
     });
 
-    describe('sortTree', () => {
+    describe('arrange', () => {
         it('递归排序整棵树', () => {
             const tree: RouteNode = createNode(
                 { raw: '', type: 'static' },
@@ -92,7 +92,7 @@ describe('createSorter', () => {
                 ]
             );
 
-            const sorted = sorter.sortTree(tree);
+            const sorted = sorter.arrange(tree);
 
             // 第一层排序
             expect(sorted.children[0]!.segment.raw).toBe('blog');
@@ -128,7 +128,7 @@ describe('createSorter', () => {
                 ],
             };
 
-            const sorted = sorter.sortTree(tree);
+            const sorted = sorter.arrange(tree);
 
             // 插槽内子节点排序
             expect(sorted.slots!['modal']!.children[0]!.segment.raw).toBe('photo');

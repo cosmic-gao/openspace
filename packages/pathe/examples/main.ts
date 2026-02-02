@@ -1,10 +1,13 @@
-import { createScanner } from '../index';
+import { createScanner, type RouteFile } from '../index';
 
 console.log('Pathe Bun Example Loaded');
 
-const scanner = createScanner({
+// 定义自定义文件类型
+type CustomFile = RouteFile | 'meta';
+
+// 使用泛型创建支持自定义文件类型的扫描器
+const scanner = createScanner<CustomFile>({
     convention: {
-        // @ts-expect-error - Demonstrating custom file convention extension
         files: ['page', 'layout', 'meta'],
         extensions: ['.tsx', '.ts']
     }

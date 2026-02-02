@@ -8,7 +8,7 @@ import { createParser } from '../core/parser';
 /**
  * 默认文件约定
  */
-const DEFAULT_CONVENTION: FileConvention = {
+const DEFAULT_CONVENTION: FileConvention<RouteFile> = {
     files: [
         'page',
         'layout',
@@ -24,43 +24,71 @@ const DEFAULT_CONVENTION: FileConvention = {
 
 /**
  * 扫描选项
+ *
+ * @typeParam T - 自定义文件类型，默认为 RouteFile
  */
-export interface ScanOptions {
+export interface ScanOptions<T extends string = RouteFile> {
     /** 文件约定，默认使用 Next.js 风格 */
-    convention?: FileConvention;
-    /** 段解析器，默认使用 createsParser() */
+    convention?: FileConvention<T>;
+    /** 段解析器，默认使用 createParser() */
     parser?: SegmentParser;
+    /**
+     * 启用缓存（预留，暂未实现）
+     * @experimental
+     */
+    cache?: boolean;
 }
 
 /**
  * 路由扫描器接口
+ *
+ * @typeParam T - 自定义文件类型，默认为 RouteFile
  */
-export interface RouteScanner {
+export interface RouteScanner<T extends string = RouteFile> {
     /**
      * 扫描目录生成路由树
      *
      * @param dir - 根目录路径
      * @returns 路由树
      */
-    scan(dir: string): Promise<RouteTree>;
+    scan(dir: string): Promise<RouteTree<T>>;
 }
 
 /**
  * 创建路由扫描器
  *
+ * @typeParam T - 自定义文件类型
  * @param options - 扫描选项
+ *
+ * @example
+ * ```typescript
+ * // 默认用法
+ * const scanner = createScanner();
+ * const tree = await scanner.scan('./app');
+ *
+ * // 自定义文件类型
+ * type CustomFile = RouteFile | 'meta';
+ * const customScanner = createScanner<CustomFile>({
+ *   convention: {
+ *     files: ['page', 'layout', 'meta'],
+ *     extensions: ['.tsx', '.ts'],
+ *   },
+ * });
+ * ```
  */
-export function createScanner(options: ScanOptions = {}): RouteScanner {
-    const convention = options.convention ?? DEFAULT_CONVENTION;
+export function createScanner<T extends string = RouteFile>(
+    options: ScanOptions<T> = {}
+): RouteScanner<T> {
+    const convention = (options.convention ?? DEFAULT_CONVENTION) as FileConvention<T>;
     const parser = options.parser ?? createParser();
 
-    async function scanNode(dir: string, segmentRaw: string): Promise<RouteNode> {
+    async function scanNode(dir: string, segmentRaw: string): Promise<RouteNode<T>> {
         const entries = await readdir(dir, { withFileTypes: true });
 
-        const components: Partial<Record<RouteFile, string>> = {};
-        const children: RouteNode[] = [];
-        const slots: Record<string, RouteNode> = {};
-        const intercepts: RouteNode[] = [];
+        const components: Partial<Record<T, string>> = {};
+        const children: RouteNode<T>[] = [];
+        const slots: Record<string, RouteNode<T>> = {};
+        const intercepts: RouteNode<T>[] = [];
 
         for (const entry of entries) {
             const fullPath = join(dir, entry.name);
@@ -74,8 +102,8 @@ export function createScanner(options: ScanOptions = {}): RouteScanner {
                 }
 
                 // 检查文件名是否为路由文件
-                if (convention.files.includes(name as RouteFile)) {
-                    components[name as RouteFile] = fullPath;
+                if ((convention.files as readonly string[]).includes(name)) {
+                    components[name as T] = fullPath;
                 }
             } else if (entry.isDirectory()) {
                 const segment = parser.parse(entry.name);
@@ -120,7 +148,7 @@ export function createScanner(options: ScanOptions = {}): RouteScanner {
     }
 
     return {
-        async scan(dir: string): Promise<RouteTree> {
+        async scan(dir: string): Promise<RouteTree<T>> {
             try {
                 // 确保根目录存在
                 const stats = await stat(dir);

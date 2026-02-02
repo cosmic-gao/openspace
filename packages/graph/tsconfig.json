@@ -1,9 +1,0 @@
-{
-  "extends": "@openspace/tsconfig/esm",
-  "include": [
-    "./**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
-}

@@ -1,22 +1,8 @@
 import type { Segment } from './segment';
+import type { RouteFile } from './presets';
 
-/**
- * 路由文件类型
- *
- * 文件系统路由支持的特殊文件约定。
- * 可通过泛型扩展自定义文件类型。
- */
-export type RouteFile =
-    | 'page'       // 页面入口
-    | 'layout'     // 布局（嵌套共享）
-    | 'template'   // 模板（每次导航重新挂载）
-    | 'loading'    // 加载状态
-    | 'error'      // 错误边界
-    | 'not-found'  // 404 页面
-    | 'default'    // 并行路由默认状态
-    | 'route'      // API 端点
-    | 'middleware' // 中间件
-    | 'metadata';  // 元数据
+// 重新导出 RouteFile 以保持向后兼容
+export type { RouteFile } from './presets';
 
 /**
  * 路由节点接口

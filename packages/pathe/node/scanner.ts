@@ -1,26 +1,18 @@
 import { readdir, stat } from 'node:fs/promises';
 import { join, parse as parsePath } from 'node:path';
-import type { FileConvention, RouteFile, RouteNode, RouteTree } from '../types';
+import {
+    type FileConvention,
+    type RouteFile,
+    type RouteNode,
+    type RouteTree,
+    defineConvention,
+} from '../types';
 import { type SegmentParser, createParser } from '../core';
 
 /**
- * 默认文件约定
+ * 默认文件约定（使用全部预设）
  */
-const DEFAULT_CONVENTION: FileConvention<RouteFile> = {
-    files: [
-        'page',
-        'layout',
-        'template',
-        'loading',
-        'error',
-        'not-found',
-        'default',
-        'route',
-        'middleware',
-        'metadata',
-    ],
-    extensions: ['.tsx', '.ts', '.jsx', '.js'],
-};
+const DEFAULT_CONVENTION: FileConvention<RouteFile> = defineConvention();
 
 /**
  * 扫描选项
@@ -28,7 +20,7 @@ const DEFAULT_CONVENTION: FileConvention<RouteFile> = {
  * @typeParam T - 自定义文件类型，默认为 RouteFile
  */
 export interface ScanOptions<T extends string = RouteFile> {
-    /** 文件约定，默认使用 Next.js 风格 */
+    /** 文件约定，默认使用 defineConvention() */
     convention?: FileConvention<T>;
     /** 段解析器，默认使用 createParser() */
     parser?: SegmentParser;
@@ -164,9 +156,8 @@ export function createScanner<T extends string = RouteFile>(
                 }
 
                 // 扫描根节点
-                // 根节点的 segment raw 通常为空，或者由调用者决定，这里我们设为空字符串表示根
-                // 或者我们可以使用目录名。Next.js 中 app 目录本身通常不作为段的一部分（它是根）。
-                // 这里我们传递空字符串作为 raw，这样 parser 会将其解析为静态空段。
+                // 根节点的 segment raw 通常为空，或者由调用者决定
+                // 这里我们传递空字符串作为 raw，这样 parser 会将其解析为静态空段
                 const root = await scanNode(dir, '');
 
                 return { root };

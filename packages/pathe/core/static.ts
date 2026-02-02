@@ -1,5 +1,4 @@
-import type { RouteTree, RouteNode } from '../types/tree';
-import type { Route } from '../types/route';
+import type { Route, RouteNode, RouteTree } from '../types';
 import { createBuilder } from './builder';
 
 /**
@@ -77,10 +76,8 @@ export function createCollector(): StaticCollector {
         const results: DynamicRoute[] = [];
         const currentSegments = [...parentSegments, node.segment];
 
-        // 检查当前节点是否有 page 组件
         const hasPage = 'page' in node.components;
 
-        // 检查是否包含动态段
         const dynamicSegments = currentSegments.filter(
             s => s.type === 'dynamic' || s.type === 'catchAll' || s.type === 'optionalCatchAll'
         );

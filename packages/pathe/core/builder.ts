@@ -34,7 +34,6 @@ export function createBuilder(): RouteBuilder {
             for (const segment of segments) {
                 switch (segment.type) {
                     case 'static':
-                        // 过滤空段（如根节点）
                         if (segment.raw) {
                             parts.push(segment.raw);
                         }
@@ -54,7 +53,6 @@ export function createBuilder(): RouteBuilder {
 
                     case 'group':
                     case 'parallel':
-                        // 分组和并行路由不影响 URL
                         break;
                 }
             }

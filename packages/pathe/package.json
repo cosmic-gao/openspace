@@ -4,12 +4,6 @@
     "description": "Cross-platform path normalization and traversal",
     "type": "module",
     "main": "index.ts",
-    "exports": {
-        ".": "./index.ts",
-        "./core": "./core/index.ts",
-        "./node": "./node/index.ts",
-        "./types": "./types/index.ts"
-    },
     "scripts": {
         "test": "vitest",
         "dev": "bun run examples/main.ts"

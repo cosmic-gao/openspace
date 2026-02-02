@@ -1,4 +1,4 @@
-import type { RouteTree, RouteNode } from '../types/tree';
+import type { RouteNode, RouteTree } from '../types';
 
 /**
  * 序列化路由树为 JSON 字符串

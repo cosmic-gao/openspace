@@ -1,5 +1,4 @@
-import type { RouteTree, RouteNode } from '../types/tree';
-import type { Segment } from '../types/segment';
+import type { RouteNode, RouteTree, Segment } from '../types';
 
 /**
  * 验证错误类型

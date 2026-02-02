@@ -1,5 +1,4 @@
-import type { RouteNode } from '../types/tree';
-import type { SegmentType } from '../types/segment';
+import type { RouteNode, SegmentType } from '../types';
 
 /**
  * 段类型优先级映射
@@ -90,12 +89,10 @@ export function createSorter(): RouteSorter {
         },
 
         arrange<T extends string>(node: RouteNode<T>): RouteNode<T> {
-            // 递归排序子节点
             const sortedChildren = this.sort(node.children).map(child =>
                 this.arrange(child)
             );
 
-            // 递归排序插槽
             const sortedSlots = node.slots
                 ? Object.fromEntries(
                     Object.entries(node.slots).map(([name, slotNode]) => [
@@ -105,7 +102,6 @@ export function createSorter(): RouteSorter {
                 )
                 : undefined;
 
-            // 递归排序拦截路由
             const sortedIntercepts = node.intercepts
                 ? node.intercepts.map(interceptNode => this.arrange(interceptNode))
                 : undefined;

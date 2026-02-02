@@ -4,6 +4,8 @@
  * 基于文件系统的路由元模型
  */
 
-export type { SegmentType, Segment } from './segment';
-export type { Route } from './route';
-export type { RouteFile, RouteNode, RouteTree } from './tree';
+export * from './segment';
+export * from './route';
+export * from './tree';
+export * from './match';
+export * from './convention';

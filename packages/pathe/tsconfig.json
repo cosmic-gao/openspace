@@ -3,7 +3,13 @@
     "compilerOptions": {
         "types": [
             "node"
-        ]
+        ],
+        "lib": [
+            "ESNext",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "jsx": "react-jsx"
     },
     "include": [
         "./**/*.ts"

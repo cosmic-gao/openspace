@@ -8,7 +8,7 @@
 declare const __brand: unique symbol;
 
 /** 品牌类型 */
-type Brand<T, B extends string> = T & { readonly [__brand]: B };
+export type Brand<T, B extends string> = T & { readonly [__brand]: B };
 
 /** 基础 ID 类型 */
 export type Id = string;

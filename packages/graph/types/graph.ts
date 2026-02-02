@@ -12,7 +12,6 @@ import type { Edge } from './edge';
  * ```typescript
  * const graph: Graph = {
  *   id: 'graph-1' as GraphId,
- *   type: 'dataflow',
  *   nodes: new Map([['node-1', node1], ['node-2', node2]]),
  *   edges: new Map([['edge-1', edge1]]),
  * };
@@ -21,9 +20,6 @@ import type { Edge } from './edge';
 export interface Graph {
     /** 图唯一标识 */
     readonly id: GraphId;
-
-    /** 图类型，用于区分不同语义的图 */
-    readonly type: string;
 
     /** 节点集合，键为节点 ID */
     readonly nodes: ReadonlyMap<NodeId, Node>;

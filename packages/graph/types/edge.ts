@@ -11,7 +11,6 @@ import type { Socket } from './socket';
  * ```typescript
  * const edge: Edge = {
  *   id: 'edge-1' as EdgeId,
- *   type: 'dataflow',
  *   source: { nodeId: 'node-1' as NodeId, endpointId: 'ep-2' as EndpointId },
  *   target: { nodeId: 'node-2' as NodeId, endpointId: 'ep-1' as EndpointId },
  * };
@@ -20,9 +19,6 @@ import type { Socket } from './socket';
 export interface Edge {
     /** 边唯一标识 */
     readonly id: EdgeId;
-
-    /** 边类型，用于区分不同语义的边 */
-    readonly type: string;
 
     /** 源插槽 */
     readonly source: Socket;

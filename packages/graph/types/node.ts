@@ -10,7 +10,6 @@ import type { Endpoint } from './endpoint';
  * ```typescript
  * const node: Node = {
  *   id: 'node-1' as NodeId,
- *   type: 'process',
  *   endpoints: [
  *     { id: 'ep-1' as EndpointId, nodeId: 'node-1' as NodeId, direction: 'in', name: 'input' },
  *     { id: 'ep-2' as EndpointId, nodeId: 'node-1' as NodeId, direction: 'out', name: 'output' },
@@ -21,9 +20,6 @@ import type { Endpoint } from './endpoint';
 export interface Node {
     /** 节点唯一标识 */
     readonly id: NodeId;
-
-    /** 节点类型，用于区分不同语义的节点 */
-    readonly type: string;
 
     /** 节点携带的端点列表 */
     readonly endpoints: ReadonlyArray<Endpoint>;

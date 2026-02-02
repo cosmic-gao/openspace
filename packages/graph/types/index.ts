@@ -20,5 +20,6 @@ export {
 export type { Direction } from './direction';
 export type { Endpoint } from './endpoint';
 export type { Node } from './node';
-export type { Connector, Edge } from './edge';
+export type { Socket } from './socket';
+export type { Edge } from './edge';
 export type { Graph } from './graph';

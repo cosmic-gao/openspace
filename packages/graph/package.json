@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "description": "平台级、领域无关、可扩展的 Graph 元模型核心库",
     "type": "module",
+    "main": "index.ts",
     "devDependencies": {
         "@openspace/tsconfig": "workspace:*"
     }

@@ -4,7 +4,17 @@
     "description": "Cross-platform path normalization and traversal",
     "type": "module",
     "main": "index.ts",
+    "exports": {
+        ".": "./index.ts",
+        "./core": "./core/index.ts",
+        "./node": "./node/index.ts",
+        "./types": "./types/index.ts"
+    },
+    "scripts": {
+        "test": "vitest"
+    },
     "devDependencies": {
-        "@openspace/tsconfig": "workspace:*"
+        "@openspace/tsconfig": "workspace:*",
+        "vitest": "^1.0.0"
     }
 }

@@ -23,10 +23,10 @@ export interface RouteMatcher {
 function patternToRegex(pattern: string): { regex: RegExp; params: string[] } {
     const params: string[] = [];
     let regexStr = pattern
-        // 可选捕获：:name*
-        .replace(/:(\w+)\*/g, (_, name) => {
+        // 可选捕获：/:name* -> (?:/(.*))?
+        .replace(/\/:(\w+)\*/g, (_, name) => {
             params.push(name);
-            return '(.*)';
+            return '(?:/(.*))?';
         })
         // 捕获所有：:name+
         .replace(/:(\w+)\+/g, (_, name) => {

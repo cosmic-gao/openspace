@@ -24,7 +24,7 @@ export type RouteFile =
  * ```typescript
  * const node: RouteNode = {
  *   segment: { raw: '[slug]', type: 'dynamic', name: 'slug' },
- *   files: ['page'],
+ *   components: { page: '/path/to/page.tsx' },
  *   children: [],
  * };
  * ```

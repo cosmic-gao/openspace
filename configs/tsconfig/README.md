@@ -32,10 +32,10 @@ base.json
 ├── lib.json
 ├── esm.json
 ├── node.json
-├── web.json
-├── vite.json
-├── vue.json
-├── react.json
-├── next.json
-└── vitest.json
+└── web.json
+    ├── vite.json
+    │   └── vitest.json
+    ├── vue.json
+    └── react.json
+        └── next.json
 ```

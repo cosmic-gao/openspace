@@ -170,8 +170,18 @@ describe('generatePath', () => {
         expect(path).toBe('/docs/guide/getting-started');
     });
 
-    it('处理空数组', () => {
-        const path = generatePath('/docs/:slug*', { slug: [] });
-        expect(path).toBe('/docs/');
+    it('空数组抛出错误', () => {
+        expect(() => generatePath('/docs/:slug*', { slug: [] }))
+            .toThrow('Empty array for catch-all parameter: slug');
+    });
+
+    it('缺少参数抛出错误', () => {
+        expect(() => generatePath('/blog/:slug', {}))
+            .toThrow('Missing required parameters: :slug');
+    });
+
+    it('降级模式返回未替换的模式', () => {
+        const path = generatePath('/blog/:slug', {}, { throwOnMissing: false });
+        expect(path).toBe('/blog/:slug');
     });
 });

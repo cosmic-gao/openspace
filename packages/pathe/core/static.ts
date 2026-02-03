@@ -118,13 +118,26 @@ export function createCollector(): StaticCollector {
 }
 
 /**
+ * generatePath 选项
+ */
+export interface GeneratePathOptions {
+    /**
+     * 缺参或空数组时是否抛出错误
+     * @default true
+     */
+    throwOnMissing?: boolean;
+}
+
+/**
  * 生成静态路径
  *
  * 根据路由模式和参数生成具体路径。
  *
  * @param pattern - 路由模式，如 `/blog/:slug`
  * @param params - 参数值
+ * @param options - 生成选项
  * @returns 生成的路径
+ * @throws 当缺少必要参数或 catch-all 为空数组时抛出错误（除非 throwOnMissing: false）
  *
  * @example
  * ```typescript
@@ -133,15 +146,32 @@ export function createCollector(): StaticCollector {
  *
  * const catchAllPath = generatePath('/shop/:path+', { path: ['a', 'b'] });
  * // catchAllPath === '/shop/a/b'
+ *
+ * // 缺参时抛错
+ * generatePath('/blog/:slug', {}); // throws Error
+ *
+ * // 降级模式：返回未替换的模式
+ * generatePath('/blog/:slug', {}, { throwOnMissing: false });
+ * // returns '/blog/:slug'
  * ```
  */
 export function generatePath(
     pattern: string,
-    params: Readonly<Record<string, string | string[]>>
+    params: Readonly<Record<string, string | string[]>>,
+    options: GeneratePathOptions = {}
 ): string {
+    const { throwOnMissing = true } = options;
     let result = pattern;
 
     for (const [name, value] of Object.entries(params)) {
+        // 检查空数组
+        if (Array.isArray(value) && value.length === 0) {
+            if (throwOnMissing) {
+                throw new Error(`Empty array for catch-all parameter: ${name}`);
+            }
+            continue;
+        }
+
         const stringValue = Array.isArray(value) ? value.join('/') : value;
 
         // 替换可选捕获：:name*
@@ -154,5 +184,14 @@ export function generatePath(
         result = result.replace(`:${name}`, stringValue);
     }
 
+    // 检查未替换的参数
+    const missingParams = result.match(/:\w+[*+]?/g);
+    if (missingParams && missingParams.length > 0) {
+        if (throwOnMissing) {
+            throw new Error(`Missing required parameters: ${missingParams.join(', ')}`);
+        }
+    }
+
     return result;
 }
+

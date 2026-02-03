@@ -4,10 +4,13 @@ import type { RouteNode, RouteTree, Segment } from '../types';
  * 验证错误类型
  */
 export type ValidationErrorType =
-    | 'DUPLICATE_STATIC'      // 重复静态段
-    | 'MULTIPLE_DYNAMIC'      // 同级多个动态段
-    | 'DYNAMIC_CATCH_CONFLICT' // 动态段与 catch-all 冲突
-    | 'MULTIPLE_CATCH_ALL';   // 同级多个 catch-all
+    | 'DUPLICATE_STATIC'         // 重复静态段
+    | 'MULTIPLE_DYNAMIC'         // 同级多个动态段
+    | 'DYNAMIC_CATCH_CONFLICT'   // 动态段与 catch-all 冲突
+    | 'MULTIPLE_CATCH_ALL'       // 同级多个 catch-all
+    | 'INVALID_SLOT_STRUCTURE'   // 并行路由结构异常（缺少 page/default）
+    | 'INVALID_INTERCEPT_STRUCTURE' // 拦截路由结构异常（缺少 page）
+    | 'ORPHAN_MIDDLEWARE';       // 中间件无对应页面
 
 /**
  * 验证错误接口
@@ -137,18 +140,81 @@ export function createValidator(): RouteValidator {
         // 验证并行路由插槽
         if (node.slots) {
             for (const [slotName, slotNode] of Object.entries(node.slots)) {
-                errors.push(...validateNode(slotNode, `${currentPath}/@${slotName}`));
+                const slotPath = `${currentPath}/@${slotName}`;
+
+                // 结构约束：slots 必须包含 page 或 default 组件
+                const hasValidComponent = 'page' in slotNode.components || 'default' in slotNode.components;
+                const hasChildWithPage = hasPageInTree(slotNode);
+
+                if (!hasValidComponent && !hasChildWithPage) {
+                    errors.push({
+                        type: 'INVALID_SLOT_STRUCTURE',
+                        message: `Parallel route slot '@${slotName}' must contain a 'page' or 'default' component`,
+                        path: slotPath,
+                        segments: [slotNode.segment],
+                    });
+                }
+
+                errors.push(...validateNode(slotNode, slotPath));
             }
         }
 
         // 验证拦截路由
         if (node.intercepts) {
             for (const interceptNode of node.intercepts) {
+                const interceptPath = `${currentPath}/${interceptNode.segment.raw}`;
+
+                // 结构约束：intercepts 必须包含 page 组件
+                if (!('page' in interceptNode.components)) {
+                    errors.push({
+                        type: 'INVALID_INTERCEPT_STRUCTURE',
+                        message: `Intercept route '${interceptNode.segment.raw}' must contain a 'page' component`,
+                        path: interceptPath,
+                        segments: [interceptNode.segment],
+                    });
+                }
+
                 errors.push(...validateNode(interceptNode, currentPath));
             }
         }
 
+        // 验证中间件
+        if (node.middleware) {
+            // 结构约束：middleware 所在节点或子节点应有 page
+            const hasPage = 'page' in node.components || hasPageInTree(node);
+            if (!hasPage) {
+                errors.push({
+                    type: 'ORPHAN_MIDDLEWARE',
+                    message: `Middleware at '${currentPath || '/'}' has no associated page component`,
+                    path: currentPath || '/',
+                    segments: [node.segment],
+                });
+            }
+        }
+
         return errors;
+    }
+
+    /**
+     * 检查节点树中是否有 page 组件
+     */
+    const hasPageInTree = (node: RouteNode): boolean => {
+        if ('page' in node.components) {
+            return true;
+        }
+        for (const child of node.children) {
+            if (hasPageInTree(child)) {
+                return true;
+            }
+        }
+        if (node.slots) {
+            for (const slotNode of Object.values(node.slots)) {
+                if (hasPageInTree(slotNode)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     return {

@@ -15,33 +15,71 @@ export interface RouteMatcher {
 }
 
 /**
+ * 转义正则特殊字符
+ *
+ * @param str - 需要转义的字符串
+ * @returns 转义后的字符串
+ */
+function escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * 将路由 pattern 转换为正则表达式
  *
  * @param pattern - URL 模式
  * @returns 正则表达式和参数名列表
  */
-function patternToRegex(pattern: string): { regex: RegExp; params: string[] } {
-    const params: string[] = [];
-    let regexStr = pattern
-        // 可选捕获：/:name* -> (?:/(.*))?
-        .replace(/\/:(\w+)\*/g, (_, name) => {
-            params.push(name);
-            return '(?:/(.*))?';
-        })
-        // 捕获所有：:name+
-        .replace(/:(\w+)\+/g, (_, name) => {
-            params.push(name);
-            return '(.+)';
-        })
-        // 动态段：:name
-        .replace(/:(\w+)/g, (_, name) => {
-            params.push(name);
-            return '([^/]+)';
-        });
+function compile(pattern: string): { regex: RegExp; names: string[] } {
+    const names: string[] = [];
+
+    // 分割 pattern 为静态和动态部分
+    // 注意：需要处理 /:name* 这种情况，斜杠需要和参数一起变成可选
+    const parts = pattern.split(/(\/:\w+[*+]?|:\w+[*+]?)/g);
+    let expr = '';
+
+    for (const part of parts) {
+        if (part.startsWith('/:')) {
+            // 带斜杠的动态段
+            const optional = part.match(/^\/:(\w+)\*$/);
+            const catchAll = part.match(/^\/:(\w+)\+$/);
+            const dynamic = part.match(/^\/:(\w+)$/);
+
+            if (optional) {
+                names.push(optional[1]!);
+                expr += '(?:/(.*))?';
+            } else if (catchAll) {
+                names.push(catchAll[1]!);
+                expr += '/(.+)';
+            } else if (dynamic) {
+                names.push(dynamic[1]!);
+                expr += '/([^/]+)';
+            }
+        } else if (part.startsWith(':')) {
+            // 不带斜杠的动态段
+            const optional = part.match(/^:(\w+)\*$/);
+            const catchAll = part.match(/^:(\w+)\+$/);
+            const dynamic = part.match(/^:(\w+)$/);
+
+            if (optional) {
+                names.push(optional[1]!);
+                expr += '(.*)';
+            } else if (catchAll) {
+                names.push(catchAll[1]!);
+                expr += '(.+)';
+            } else if (dynamic) {
+                names.push(dynamic[1]!);
+                expr += '([^/]+)';
+            }
+        } else if (part) {
+            // 静态段：转义特殊字符
+            expr += escapeRegex(part);
+        }
+    }
 
     return {
-        regex: new RegExp(`^${regexStr}$`),
-        params,
+        regex: new RegExp(`^${expr}$`),
+        names,
     };
 }
 
@@ -59,7 +97,7 @@ function patternToRegex(pattern: string): { regex: RegExp; params: string[] } {
 export function createMatcher(): RouteMatcher {
     return {
         match(path: string, route: Route): RouteMatch | null {
-            const { regex, params: paramNames } = patternToRegex(route.pattern);
+            const { regex, names } = compile(route.pattern);
             const match = path.match(regex);
 
             if (!match) {
@@ -68,15 +106,15 @@ export function createMatcher(): RouteMatcher {
 
             const params: Record<string, string | string[]> = {};
 
-            for (let i = 0; i < paramNames.length; i++) {
-                const name = paramNames[i]!;
+            for (let i = 0; i < names.length; i++) {
+                const key = names[i]!;
                 const value = match[i + 1];
 
                 // 检查是否为捕获所有段（包含斜杠）
                 if (value?.includes('/')) {
-                    params[name] = value.split('/').filter(Boolean);
+                    params[key] = value.split('/').filter(Boolean);
                 } else if (value !== undefined) {
-                    params[name] = value;
+                    params[key] = value;
                 }
             }
 

@@ -25,6 +25,16 @@ export interface ScanOptions<T extends string = RouteFile> {
     /** 段解析器，默认使用 createParser() */
     parser?: SegmentParser;
     /**
+     * 忽略的目录/文件模式（支持简单匹配）
+     * @example ['node_modules', '.*', '__tests__']
+     */
+    ignore?: string[];
+    /**
+     * 最大并发扫描数
+     * @default Infinity
+     */
+    concurrency?: number;
+    /**
      * 启用缓存（预留，暂未实现）
      * @experimental
      */
@@ -73,6 +83,63 @@ export function createScanner<T extends string = RouteFile>(
 ): RouteScanner<T> {
     const convention = (options.convention ?? DEFAULT_CONVENTION) as FileConvention<T>;
     const parser = options.parser ?? createParser();
+    const excludes = options.ignore ?? [];
+    const limit = options.concurrency ?? Infinity;
+
+    /**
+     * 检查条目名称是否匹配排除模式
+     */
+    const excluded = (name: string): boolean => {
+        for (const pattern of excludes) {
+            // 支持简单通配符匹配
+            if (pattern.startsWith('*')) {
+                // *xx -> 后缀匹配
+                if (name.endsWith(pattern.slice(1))) return true;
+            } else if (pattern.endsWith('*')) {
+                // xx* -> 前缀匹配
+                if (name.startsWith(pattern.slice(0, -1))) return true;
+            } else if (pattern === name) {
+                // 精确匹配
+                return true;
+            } else if (pattern.startsWith('.') && name.startsWith('.')) {
+                // .* 匹配所有隐藏文件/目录
+                if (pattern === '.*') return true;
+            }
+        }
+        return false;
+    };
+
+    /**
+     * 限流执行异步任务
+     */
+    const throttle = async <R>(
+        factories: (() => Promise<R>)[],
+        cap: number
+    ): Promise<R[]> => {
+        if (cap === Infinity) {
+            return Promise.all(factories.map(fn => fn()));
+        }
+
+        const results: R[] = [];
+        const pending: Promise<void>[] = [];
+
+        for (const fn of factories) {
+            const promise = fn().then(r => { results.push(r); });
+            pending.push(promise);
+
+            if (pending.length >= cap) {
+                await Promise.race(pending);
+                for (let i = pending.length - 1; i >= 0; i--) {
+                    if (await Promise.race([pending[i], Promise.resolve('wait')]) !== 'wait') {
+                        pending.splice(i, 1);
+                    }
+                }
+            }
+        }
+
+        await Promise.all(pending);
+        return results;
+    };
 
     const scanNode = async (dir: string, segmentRaw: string): Promise<RouteNode<T>> => {
         const entries = await readdir(dir, { withFileTypes: true });
@@ -83,9 +150,14 @@ export function createScanner<T extends string = RouteFile>(
         const intercepts: RouteNode<T>[] = [];
         let middlewarePath: string | undefined;
 
-        const promises: Promise<void>[] = [];
+        const dirTasks: { entryName: string; fullPath: string }[] = [];
 
         for (const entry of entries) {
+            // 检查是否应排除
+            if (excluded(entry.name)) {
+                continue;
+            }
+
             const fullPath = join(dir, entry.name);
 
             if (entry.isFile()) {
@@ -106,38 +178,47 @@ export function createScanner<T extends string = RouteFile>(
                     }
                 }
             } else if (entry.isDirectory()) {
-                // 并行处理子目录
-                promises.push((async () => {
-                    const segment = parser.parse(entry.name);
-                    const node = await scanNode(fullPath, entry.name);
-
-                    // 根据段类型分类
-                    switch (segment.type) {
-                        case 'parallel':
-                            // 并行路由：@slot -> slots
-                            // name 是 slot 名称 (去掉 @)
-                            if (segment.name) {
-                                slots[segment.name] = node;
-                            }
-                            break;
-
-                        case 'interceptSame':
-                        case 'interceptParent':
-                        case 'interceptRoot':
-                            // 拦截路由 -> intercepts
-                            intercepts.push(node);
-                            break;
-
-                        default:
-                            // 其他（静态、动态、分组等） -> children
-                            children.push(node);
-                            break;
-                    }
-                })());
+                // 收集子目录扫描任务
+                dirTasks.push({
+                    entryName: entry.name,
+                    fullPath,
+                });
             }
         }
 
-        await Promise.all(promises);
+        // 限流执行子目录扫描
+        const scanned = await throttle(
+            dirTasks.map(({ entryName, fullPath }) => async () => {
+                const segment = parser.parse(entryName);
+                const node = await scanNode(fullPath, entryName);
+                return { segment, node };
+            }),
+            limit
+        );
+
+        // 根据段类型分类
+        for (const { segment, node } of scanned) {
+            switch (segment.type) {
+                case 'parallel':
+                    // 并行路由：@slot -> slots
+                    if (segment.name) {
+                        slots[segment.name] = node;
+                    }
+                    break;
+
+                case 'interceptSame':
+                case 'interceptParent':
+                case 'interceptRoot':
+                    // 拦截路由 -> intercepts
+                    intercepts.push(node);
+                    break;
+
+                default:
+                    // 其他（静态、动态、分组等） -> children
+                    children.push(node);
+                    break;
+            }
+        }
 
         // 构建当前节点的 segment 对象
         // 如果是根递归调用，segmentRaw 可能是空或者 root dirname

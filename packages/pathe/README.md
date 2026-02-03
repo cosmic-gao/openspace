@@ -22,7 +22,12 @@ pnpm add @openspace/pathe
 ```typescript
 import { createScanner } from "@openspace/pathe";
 
-const scanner = createScanner();
+const scanner = createScanner({
+    // 忽略特定目录
+    ignore: ['node_modules', '.*', '__tests__'],
+    // 限制并发扫描数
+    concurrency: 10,
+});
 const tree = await scanner.scan("./app");
 
 console.log(tree);
@@ -67,6 +72,25 @@ const result = matcher.match("/blog/123", route);
 console.log(result?.params); // { id: '123' }
 ```
 
+### 生成 URL
+
+```typescript
+import { generatePath } from "@openspace/pathe/core";
+
+// 基础用法
+const path = generatePath('/blog/:slug', { slug: 'hello' });
+// => '/blog/hello'
+
+// 处理 catch-all
+const path2 = generatePath('/shop/:path+', { path: ['a', 'b'] });
+// => '/shop/a/b'
+
+// 错误处理配置
+// throwOnMissing: false (默认 true) - 缺参时不抛错，返回原始模式
+const raw = generatePath('/blog/:id', {}, { throwOnMissing: false });
+// => '/blog/:id'
+```
+
 ### 排序路由树
 
 ```typescript
@@ -82,6 +106,11 @@ const sortedTree = sorter.arrange(tree.root);
 import { createValidator } from "@openspace/pathe/core";
 
 const validator = createValidator();
+// 验证内容：
+// - 重复静态路由
+// - 动态路由冲突
+// - 并行路由/拦截路由结构完整性
+// - 中间件孤儿检测
 const result = validator.validate(tree);
 
 if (!result.valid) {
@@ -163,6 +192,7 @@ const scanner = createScanner({ convention: custom });
 - `createParser()` - 段解析器
 - `createBuilder()` - 路由构建器
 - `createMatcher()` - URL 匹配器
+- `generatePath()` - URL 生成器
 - `createSorter()` - 路由排序器
 - `createValidator()` - 路由验证器
 - `createCollector()` - 静态参数收集器

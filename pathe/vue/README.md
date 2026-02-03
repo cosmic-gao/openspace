@@ -60,12 +60,20 @@ createApp(App).use(router).mount('#app');
 
 ## 文件约定
 
-| 文件名 | 用途 |
-| :--- | :--- |
-| `page.vue` | 页面组件 |
-| `layout.vue` | 布局组件 |
-| `[id].vue` | 动态路由 |
-| `[...slug].vue` | Catch-all 路由 |
+Pathe 自动扫描目标目录下的 `.vue` 文件生成路由。
+
+| 文件名 | 对应路由 | 备注 |
+| :--- | :--- | :--- |
+| `index.vue` | `/` | 默认首页 |
+| `about.vue` | `/about` | 静态路径 |
+| `users/[id].vue` | `/users/:id` | 动态参数 |
+| `[...all].vue` | `/:all(.*)*` | Catch-all 路由 |
+| `_layout.vue` | - | 父级布局组件 |
+
+### 懒加载
+
+所有生成的路由组件均通过动态导入 (`() => import(...)`) 实现懒加载，不仅优化了首屏体积，也避免了开发时的循环依赖问题。
+
 
 ## License
 

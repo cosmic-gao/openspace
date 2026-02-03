@@ -61,12 +61,26 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 ## 文件约定
 
-| 文件名 | 用途 |
-| :--- | :--- |
-| `page.tsx` | 页面组件 |
-| `layout.tsx` | 布局组件 |
-| `[id].tsx` | 动态路由 |
-| `[...slug].tsx` | Catch-all 路由 |
+Pathe 自动扫描目标目录下的 `.tsx` / `.jsx` 文件生成路由。
+
+| 文件名 | 对应路由 | 备注 |
+| :--- | :--- | :--- |
+| `index.tsx` | `/` | 默认首页 (index: true) |
+| `about.tsx` | `/about` | 静态路径 |
+| `users/[id].tsx` | `/users/:id` | 动态参数 |
+| `[...all].tsx` | `/*` | Catch-all 路由 |
+| `_layout.tsx` | - | 父级布局组件 |
+
+### 懒加载 (React.lazy)
+
+生成的路由配置自动使用 `React.lazy` 包装组件导入。确保在应用根部包裹 `<React.Suspense>` 以处理加载状态。
+
+```tsx
+<Suspense fallback={<Loading />}>
+  <RouterProvider router={router} />
+</Suspense>
+```
+
 
 ## License
 

@@ -33,12 +33,27 @@ export const myPlugin = define('my-framework', {
 
 ```typescript
 interface Options {
-    /** 路由目录，默认 'app' */
+    /** 
+     * 路由目录，默认 'app' 
+     * 建议使用绝对路径，或相对于 vite root 的路径
+     */
     dir?: string;
-    /** 忽略模式 */
+    
+    /** 
+     * 忽略模式 
+     * 支持通配符，如 ['components', '*.test.ts']
+     */
     ignore?: string[];
 }
 ```
+
+### 开发体验（HMR）
+
+`@pathe/vite` 实现了智能的 HMR 策略：
+
+- **增量更新**：仅当路由文件**新增** (`add`) 或**删除** (`unlink`) 时，才会触发路由表的重新生成。
+- **局部热更**：路由表更新时，通过失效虚拟模块 (`invalidateModule`) 触发热更新，而非强制刷新整个页面 (Full Reload)。这意味着在编辑组件代码时，你可以保持应用状态。
+
 
 ## License
 

@@ -1,0 +1,14 @@
+{
+    "name": "@pathe/vite",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "index.ts",
+    "peerDependencies": {
+        "vite": "^5.0.0 || ^6.0.0",
+        "@pathe/core": "workspace:*"
+    },
+    "devDependencies": {
+        "vite": "^6.0.0",
+        "@pathe/core": "workspace:*"
+    }
+}

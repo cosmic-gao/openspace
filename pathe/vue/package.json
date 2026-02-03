@@ -1,0 +1,22 @@
+{
+    "name": "@pathe/vue",
+    "version": "0.0.1",
+    "description": "Vue integration for Pathe",
+    "type": "module",
+    "main": "index.ts",
+    "exports": {
+        ".": {
+            "types": "./index.ts",
+            "default": "./index.ts"
+        },
+        "./client": {
+            "types": "./client.d.ts"
+        }
+    },
+    "peerDependencies": {
+        "@pathe/core": "workspace:*",
+        "@pathe/vite": "workspace:*",
+        "vite": "^5.0.0 || ^6.0.0",
+        "vue-router": "^4.0.0"
+    }
+}

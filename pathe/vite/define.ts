@@ -1,5 +1,6 @@
 import type { Plugin } from 'vite';
 import type { RouteTree } from '@pathe/core';
+import * as path from 'node:path';
 
 /**
  * 上下文
@@ -80,22 +81,32 @@ export function define(name: string, def: Definition) {
             },
 
             configureServer(server) {
-                server.watcher.add(dir);
+                const root = server.config.root;
+                // 确保 dir 是绝对路径，以匹配 watcher 的输出
+                const absDir = path.resolve(root, dir);
 
-                server.watcher.on('all', async (event, path) => {
-                    if (!path.startsWith(dir)) return;
-                    if (!['add', 'unlink', 'change'].includes(event)) return;
+                server.watcher.add(absDir);
+
+                server.watcher.on('all', async (event, file) => {
+                    // Windows 下路径可能是反斜杠，甚至 watcher 返回的格式可能不一致
+                    // 最好统一 normalize，但简单起见先转绝对路径比较
+                    // Vite watcher 通常返回系统相关的绝对路径
+                    if (!file.startsWith(absDir)) return;
+
+                    // 只监听结构性变化，忽略文件内容修改
+                    if (!['add', 'unlink'].includes(event)) return;
 
                     const { createScanner } = await import('@pathe/core');
                     const scanner = createScanner({
                         ignore: options.ignore,
                     });
+
+                    // 重新扫描
                     ctx.tree = await scanner.scan(dir);
 
                     const mod = server.moduleGraph.getModuleById(resolved);
                     if (mod) {
                         server.moduleGraph.invalidateModule(mod);
-                        server.ws.send({ type: 'full-reload' });
                     }
                 });
             },

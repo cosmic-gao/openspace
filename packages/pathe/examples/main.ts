@@ -3,11 +3,10 @@ import {
     createSorter,
     createCollector,
     createValidator,
-    generatePath,
-    type RouteFile,
+    generatePath
 } from '../index';
-import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 console.log('=== Pathe 示例 ===\n');
 
@@ -31,7 +30,8 @@ const validator = createValidator();
 async function run() {
     // 1. 扫描路由目录
     // 1. 扫描路由目录
-    const routesDir = resolve('packages/pathe/examples/routes');
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const routesDir = join(__dirname, 'routes');
     console.log(`1. 扫描路由目录: ${routesDir}...`);
     const tree = await scanner.scan(routesDir);
     console.log('扫描完成，根节点子节点数:', tree.root.children.length);

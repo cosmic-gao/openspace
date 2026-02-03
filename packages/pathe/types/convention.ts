@@ -54,7 +54,23 @@ export interface ConventionOptions<T extends string = RouteFile> {
 }
 
 /** 默认扩展名 */
-const DEFAULT_EXTENSIONS: readonly string[] = ['.tsx', '.ts', '.jsx', '.js'];
+const DEFAULT_EXTENSIONS: readonly string[] = [
+    // Logic
+    '.tsx',
+    '.ts',
+    '.jsx',
+    '.js',
+    // Data
+    '.json',
+    '.xml',
+    '.txt',
+    // Images
+    '.ico',
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.svg',
+];
 
 /** 所有预设名称 */
 const ALL_PRESETS: PresetName[] = ['core', 'error', 'api', 'meta'];

@@ -113,7 +113,9 @@ const restored = deserialize(json);
 |           | `404`        | 404 页面                 |
 | **API**   | `route`      | API 端点                 |
 |           | `middleware` | 中间件                   |
-| **Meta**  | `metadata`   | 元数据                   |
+| **Meta**  | `robots`     | robots.txt               |
+|           | `sitemap`    | sitemap.xml              |
+|           | `manifest`   | manifest.json            |
 
 ### 自定义约定
 

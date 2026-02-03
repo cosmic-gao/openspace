@@ -27,7 +27,15 @@ export type ApiFiles =
     | 'middleware'; // 中间件
 
 /** 元数据文件 */
-export type MetaFiles = 'metadata';
+export type MetaFiles =
+    | 'favicon'
+    | 'icon'
+    | 'apple-icon'
+    | 'opengraph-image'
+    | 'twitter-image'
+    | 'sitemap'
+    | 'robots'
+    | 'manifest';
 
 // ============================================================================
 // 组合类型
@@ -65,7 +73,16 @@ export const API_FILES: readonly ApiFiles[] = [
 ] as const;
 
 /** 元数据文件预设 */
-export const META_FILES: readonly MetaFiles[] = ['metadata'] as const;
+export const META_FILES: readonly MetaFiles[] = [
+    'favicon',
+    'icon',
+    'apple-icon',
+    'opengraph-image',
+    'twitter-image',
+    'sitemap',
+    'robots',
+    'manifest',
+] as const;
 
 /** 所有预设映射 */
 export const PRESETS: Record<PresetName, readonly string[]> = {

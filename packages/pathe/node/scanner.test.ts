@@ -58,4 +58,28 @@ describe('RouteScanner', () => {
 
         await rm(testDir, { recursive: true, force: true });
     });
+
+    it('should scan nextjs 16 metadata files', async () => {
+        const dir = join(testDir, 'meta-test');
+        await createFiles({
+            'meta-test': [
+                'sitemap.xml',
+                'robots.txt',
+                'favicon.ico',
+                'manifest.json',
+                'opengraph-image.png',
+            ],
+        });
+
+        const tree = await scanner.scan(dir);
+
+        expect(tree.root.components.sitemap).toBeDefined();
+        expect(tree.root.components.robots).toBeDefined();
+        expect(tree.root.components.favicon).toBeDefined();
+        expect(tree.root.components.manifest).toBeDefined();
+        // 因为类型系统推断，这里可能需要 as any 或者确保类型定义已更新
+        expect((tree.root.components as any)['opengraph-image']).toBeDefined();
+
+        await rm(testDir, { recursive: true, force: true });
+    });
 });

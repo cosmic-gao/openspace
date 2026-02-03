@@ -4,10 +4,10 @@
 export const enum PatheErrorCode {
     // Parser Errors
     INVALID_SEGMENT = 'INVALID_SEGMENT',
-    
+
     // Scanner Errors
     SCAN_FAILED = 'SCAN_FAILED',
-    
+
     // Validator Errors
     DUPLICATE_STATIC = 'DUPLICATE_STATIC',
     MULTIPLE_DYNAMIC = 'MULTIPLE_DYNAMIC',
@@ -34,7 +34,7 @@ export class PatheError extends Error {
         this.code = code;
         this.context = context;
         this.name = 'PatheError';
-        
+
         // 恢复原型链 (针对 ES5 target)
         Object.setPrototypeOf(this, PatheError.prototype);
     }

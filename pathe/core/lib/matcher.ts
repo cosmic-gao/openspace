@@ -52,7 +52,7 @@ function compile(pattern: string): { regex: RegExp; names: string[] } {
 
         if (match) {
             const [, slash, name, modifier] = match;
-            names.push(name);
+            names.push(name!);
 
             if (slash) {
                 // 带前导斜杠的情况

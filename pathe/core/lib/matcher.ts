@@ -25,62 +25,75 @@ function escapeRegex(str: string): string {
 }
 
 /**
+ * 编译结果缓存
+ */
+const cache = new Map<string, { regex: RegExp; names: string[] }>();
+
+/**
  * 将路由 pattern 转换为正则表达式
  *
  * @param pattern - URL 模式
  * @returns 正则表达式和参数名列表
  */
 function compile(pattern: string): { regex: RegExp; names: string[] } {
+    if (cache.has(pattern)) {
+        return cache.get(pattern)!;
+    }
+
     const names: string[] = [];
 
     // 分割 pattern 为静态和动态部分
-    // 注意：需要处理 /:name* 这种情况，斜杠需要和参数一起变成可选
-    const parts = pattern.split(/(\/:\w+[*+]?|:\w+[*+]?)/g);
+    // 捕获组: 1. 可选斜杠 2. 参数名 3. 可选装饰符(*, +)
+    const parts = pattern.split(/(\/?:\w+[*+]?)/g);
     let expr = '';
 
     for (const part of parts) {
-        if (part.startsWith('/:')) {
-            // 带斜杠的动态段
-            const optional = part.match(/^\/:(\w+)\*$/);
-            const catchAll = part.match(/^\/:(\w+)\+$/);
-            const dynamic = part.match(/^\/:(\w+)$/);
+        const match = part.match(/^(\/?):(\w+)([*+]?)$/);
 
-            if (optional) {
-                names.push(optional[1]!);
-                expr += '(?:/(.*))?';
-            } else if (catchAll) {
-                names.push(catchAll[1]!);
-                expr += '/(.+)';
-            } else if (dynamic) {
-                names.push(dynamic[1]!);
-                expr += '/([^/]+)';
-            }
-        } else if (part.startsWith(':')) {
-            // 不带斜杠的动态段
-            const optional = part.match(/^:(\w+)\*$/);
-            const catchAll = part.match(/^:(\w+)\+$/);
-            const dynamic = part.match(/^:(\w+)$/);
+        if (match) {
+            const [, slash, name, modifier] = match;
+            names.push(name);
 
-            if (optional) {
-                names.push(optional[1]!);
-                expr += '(.*)';
-            } else if (catchAll) {
-                names.push(catchAll[1]!);
-                expr += '(.+)';
-            } else if (dynamic) {
-                names.push(dynamic[1]!);
-                expr += '([^/]+)';
+            if (slash) {
+                // 带前导斜杠的情况
+                switch (modifier) {
+                    case '*': // Optional catch-all: /:name* -> (?:/(.*))?
+                        expr += '(?:/(.*))?';
+                        break;
+                    case '+': // Catch-all: /:name+ -> /(.+)
+                        expr += '/(.+)';
+                        break;
+                    default: // Dynamic: /:name -> /([^/]+)
+                        expr += '/([^/]+)';
+                        break;
+                }
+            } else {
+                // 不带前导斜杠的情况 (通常在 path 开头或手动拼接)
+                switch (modifier) {
+                    case '*':
+                        expr += '(.*)';
+                        break;
+                    case '+':
+                        expr += '(.+)';
+                        break;
+                    default:
+                        expr += '([^/]+)';
+                        break;
+                }
             }
         } else if (part) {
-            // 静态段：转义特殊字符
+            // 静态段
             expr += escapeRegex(part);
         }
     }
 
-    return {
+    const result = {
         regex: new RegExp(`^${expr}$`),
         names,
     };
+
+    cache.set(pattern, result);
+    return result;
 }
 
 /**

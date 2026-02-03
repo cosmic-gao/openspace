@@ -202,6 +202,37 @@ const scanner = createScanner({ convention: custom });
 
 - `createScanner()` - 文件系统扫描器（Node.js 专用）
 
+## 路由适配器
+
+pathe 提供把 `RouteTree` 转换为不同框架路由配置的适配器。
+
+### Vue Router
+
+```typescript
+import { createScanner } from "@openspace/pathe";
+import { adapt } from "@openspace/pathe/vue";
+
+const tree = await createScanner().scan("./app");
+
+const routes = adapt(tree, {
+    resolve: (path) => () => import(path),
+});
+```
+
+### React Router
+
+```typescript
+import { createScanner } from "@openspace/pathe";
+import { adapt } from "@openspace/pathe/react";
+
+const tree = await createScanner().scan("./app");
+
+const routes = adapt(tree, {
+    element: (path) => path,
+    component: (path) => lazy(() => import(path)),
+});
+```
+
 ## License
 
 MIT

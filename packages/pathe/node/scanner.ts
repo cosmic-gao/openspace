@@ -83,6 +83,8 @@ export function createScanner<T extends string = RouteFile>(
         const intercepts: RouteNode<T>[] = [];
         let middlewarePath: string | undefined;
 
+        const promises: Promise<void>[] = [];
+
         for (const entry of entries) {
             const fullPath = join(dir, entry.name);
 
@@ -104,33 +106,38 @@ export function createScanner<T extends string = RouteFile>(
                     }
                 }
             } else if (entry.isDirectory()) {
-                const segment = parser.parse(entry.name);
-                const node = await scanNode(fullPath, entry.name);
+                // 并行处理子目录
+                promises.push((async () => {
+                    const segment = parser.parse(entry.name);
+                    const node = await scanNode(fullPath, entry.name);
 
-                // 根据段类型分类
-                switch (segment.type) {
-                    case 'parallel':
-                        // 并行路由：@slot -> slots
-                        // name 是 slot 名称 (去掉 @)
-                        if (segment.name) {
-                            slots[segment.name] = node;
-                        }
-                        break;
+                    // 根据段类型分类
+                    switch (segment.type) {
+                        case 'parallel':
+                            // 并行路由：@slot -> slots
+                            // name 是 slot 名称 (去掉 @)
+                            if (segment.name) {
+                                slots[segment.name] = node;
+                            }
+                            break;
 
-                    case 'interceptSame':
-                    case 'interceptParent':
-                    case 'interceptRoot':
-                        // 拦截路由 -> intercepts
-                        intercepts.push(node);
-                        break;
+                        case 'interceptSame':
+                        case 'interceptParent':
+                        case 'interceptRoot':
+                            // 拦截路由 -> intercepts
+                            intercepts.push(node);
+                            break;
 
-                    default:
-                        // 其他（静态、动态、分组等） -> children
-                        children.push(node);
-                        break;
-                }
+                        default:
+                            // 其他（静态、动态、分组等） -> children
+                            children.push(node);
+                            break;
+                    }
+                })());
             }
         }
+
+        await Promise.all(promises);
 
         // 构建当前节点的 segment 对象
         // 如果是根递归调用，segmentRaw 可能是空或者 root dirname

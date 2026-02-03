@@ -51,59 +51,62 @@ const INTERCEPT_SAME = /^\(\.\)(\w+)$/;
 export function createParser(): SegmentParser {
     return {
         parse(raw: string): Segment {
+            const firstChar = raw[0];
             let match: RegExpMatchArray | null;
 
-            // 可选捕获：[[...slug]]
-            match = raw.match(OPTIONAL_CATCH_ALL);
-            if (match) {
-                return { raw, type: 'optionalCatchAll', name: match[1] };
+            // 快速路径检查
+            if (firstChar === '[') {
+                // 可选捕获：[[...slug]]
+                match = raw.match(OPTIONAL_CATCH_ALL);
+                if (match) {
+                    return { raw, type: 'optionalCatchAll', name: match[1] };
+                }
+
+                // 捕获所有：[...slug]
+                match = raw.match(CATCH_ALL);
+                if (match) {
+                    return { raw, type: 'catchAll', name: match[1] };
+                }
+
+                // 动态段：[id]
+                match = raw.match(DYNAMIC);
+                if (match) {
+                    return { raw, type: 'dynamic', name: match[1] };
+                }
+            } else if (firstChar === '(') {
+                // 根级拦截：(...)photo
+                match = raw.match(INTERCEPT_ROOT);
+                if (match) {
+                    return { raw, type: 'interceptRoot', name: match[1], level: Infinity };
+                }
+
+                // 同级拦截：(.)photo
+                match = raw.match(INTERCEPT_SAME);
+                if (match) {
+                    return { raw, type: 'interceptSame', name: match[1], level: 0 };
+                }
+
+                // 父级拦截：(..)photo
+                match = raw.match(INTERCEPT_PARENT);
+                if (match) {
+                    const level = (match[0].match(/\(\.\.\)/g) || []).length;
+                    return { raw, type: 'interceptParent', name: match[2], level };
+                }
+
+                // 分组：(admin)
+                match = raw.match(GROUP);
+                if (match) {
+                    return { raw, type: 'group', name: match[1] };
+                }
+            } else if (firstChar === '@') {
+                // 并行路由：@modal
+                match = raw.match(PARALLEL);
+                if (match) {
+                    return { raw, type: 'parallel', name: match[1] };
+                }
             }
 
-            // 捕获所有：[...slug]
-            match = raw.match(CATCH_ALL);
-            if (match) {
-                return { raw, type: 'catchAll', name: match[1] };
-            }
-
-            // 动态段：[id]
-            match = raw.match(DYNAMIC);
-            if (match) {
-                return { raw, type: 'dynamic', name: match[1] };
-            }
-
-            // 根级拦截：(...)photo
-            match = raw.match(INTERCEPT_ROOT);
-            if (match) {
-                return { raw, type: 'interceptRoot', name: match[1], level: Infinity };
-            }
-
-            // 同级拦截：(.)photo
-            match = raw.match(INTERCEPT_SAME);
-            if (match) {
-                return { raw, type: 'interceptSame', name: match[1], level: 0 };
-            }
-
-            // 父级拦截：(..)photo, (..)(..)photo 等
-            match = raw.match(INTERCEPT_PARENT);
-            if (match) {
-                // 计算层级：(..) 的数量
-                const level = (match[0].match(/\(\.\.\)/g) || []).length;
-                return { raw, type: 'interceptParent', name: match[2], level };
-            }
-
-            // 分组：(admin)
-            match = raw.match(GROUP);
-            if (match) {
-                return { raw, type: 'group', name: match[1] };
-            }
-
-            // 并行路由：@modal
-            match = raw.match(PARALLEL);
-            if (match) {
-                return { raw, type: 'parallel', name: match[1] };
-            }
-
-            // 静态段
+            // 静态段（默认）
             return { raw, type: 'static' };
         },
     };

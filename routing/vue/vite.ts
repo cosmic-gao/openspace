@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite';
 import type { RouteTree } from '@routing/core';
 import { define, type Options } from '@routing/vite';
-import { adapt, type Options as AdaptOptions, type Route } from './adapter';
+import { adapt, type Options as AdaptOptions, type Route } from './adapter.ts';
 
 /**
  * 选项

@@ -6,5 +6,5 @@
 
 export * from './node';
 export * from './types';
-export * from './adapter';
 export * from './kernel';
+export * from './adapter';

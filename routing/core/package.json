@@ -4,6 +4,9 @@
     "description": "Cross-platform path normalization and traversal",
     "type": "module",
     "main": "index.ts",
+    "scripts": {
+        "test": "vitest"
+    },
     "peerDependencies": {
         "vite": "^5.0.0 || ^6.0.0"
     },
@@ -16,8 +19,5 @@
         "vite": {
             "optional": true
         }
-    },
-    "scripts": {
-        "test": "vitest"
     }
 }

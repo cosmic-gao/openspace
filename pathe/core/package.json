@@ -1,5 +1,5 @@
 {
-    "name": "@pathe/core",
+    "name": "@routing/core",
     "version": "0.0.1",
     "description": "Cross-platform path normalization and traversal",
     "type": "module",

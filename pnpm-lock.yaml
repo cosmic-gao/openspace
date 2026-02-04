@@ -36,10 +36,10 @@ importers:
 
   pathe/react:
     dependencies:
-      '@pathe/core':
+      '@routing/core':
         specifier: workspace:*
         version: link:../core
-      '@pathe/vite':
+      '@routing/vite':
         specifier: workspace:*
         version: link:../vite
       react-router:
@@ -61,7 +61,7 @@ importers:
 
   pathe/vite:
     devDependencies:
-      '@pathe/core':
+      '@routing/core':
         specifier: workspace:*
         version: link:../core
       vite:
@@ -70,10 +70,10 @@ importers:
 
   pathe/vue:
     dependencies:
-      '@pathe/core':
+      '@routing/core':
         specifier: workspace:*
         version: link:../core
-      '@pathe/vite':
+      '@routing/vite':
         specifier: workspace:*
         version: link:../vite
       vite:

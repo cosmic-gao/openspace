@@ -7,8 +7,8 @@ import {
     type RouteTree,
     defineConvention,
 } from '../types';
-import { type SegmentParser, createParser } from '../lib/parser';
-import { createError, PatheErrorCode, PatheError } from '../lib/errors';
+import { type SegmentParser, createParser } from '../kernel/parser';
+import { createError, RoutingErrorCode, RoutingError } from '../kernel/errors';
 
 /**
  * 默认文件约定（使用全部预设）
@@ -175,15 +175,15 @@ export function createScanner<T extends string = RouteFile>(
             try {
                 const stats = await stat(dir);
                 if (!stats.isDirectory()) {
-                    throw createError(PatheErrorCode.SCAN_FAILED, `Path is not a directory: ${dir}`);
+                    throw createError(RoutingErrorCode.SCAN_FAILED, `Path is not a directory: ${dir}`);
                 }
 
                 const root = await scanNode(dir, '');
                 return { root };
             } catch (error) {
-                if (error instanceof PatheError) throw error;
+                if (error instanceof RoutingError) throw error;
                 throw createError(
-                    PatheErrorCode.SCAN_FAILED,
+                    RoutingErrorCode.SCAN_FAILED,
                     `Failed to scan directory ${dir}: ${error instanceof Error ? error.message : String(error)}`,
                     error
                 );

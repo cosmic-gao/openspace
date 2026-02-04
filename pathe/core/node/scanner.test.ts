@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 
 describe('RouteScanner', () => {
     const scanner = createScanner();
-    const testDir = join(tmpdir(), 'pathe-test-' + Date.now());
+    const testDir = join(tmpdir(), 'routing-test-' + Date.now());
 
     // Helper to create file structure
     async function createFiles(structure: Record<string, string[]>) {

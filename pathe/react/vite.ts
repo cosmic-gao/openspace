@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite';
-import type { RouteTree } from '@pathe/core';
-import { define, type Options } from '@pathe/vite';
+import type { RouteTree } from '@routing/core';
+import { define, type Options } from '@routing/vite';
 import { adapt, type Options as AdaptOptions, type Route } from './adapter';
 
 /**
@@ -69,7 +69,7 @@ const generate = (tree: RouteTree, options: AdaptOptions): string => {
  */
 export default function plugin(options: ReactOptions = {}): Plugin {
     const factory = define('react', {
-        id: 'virtual:pathe/routes',
+        id: 'virtual:routing/routes',
         generate: (tree) => generate(tree, options),
     });
 

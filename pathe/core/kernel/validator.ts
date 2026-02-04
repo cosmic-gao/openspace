@@ -1,12 +1,12 @@
 import type { RouteNode, RouteTree, Segment } from '../types';
-import { PatheErrorCode } from './errors';
+import { RoutingErrorCode } from './errors';
 
 /**
  * 验证错误接口
  */
 export interface ValidationError {
     /** 错误类型 */
-    readonly type: PatheErrorCode;
+    readonly type: RoutingErrorCode;
     /** 错误消息 */
     readonly message: string;
     /** 冲突路径 */
@@ -63,7 +63,7 @@ export function createValidator(): RouteValidator {
 
         if (duplicateNames.length > 0) {
             errors.push({
-                type: PatheErrorCode.DUPLICATE_STATIC,
+                type: RoutingErrorCode.DUPLICATE_STATIC,
                 message: `Duplicate static segments: ${duplicateNames.join(', ')}`,
                 path,
                 segments: segments.filter(s => duplicateNames.includes(s.raw)),
@@ -81,7 +81,7 @@ export function createValidator(): RouteValidator {
         // 检查同级多个动态段 (e.g. /[id] and /[slug])
         if (groups.dynamic.length > 1) {
             errors.push({
-                type: PatheErrorCode.MULTIPLE_DYNAMIC,
+                type: RoutingErrorCode.MULTIPLE_DYNAMIC,
                 message: `Multiple dynamic segments at same level: ${groups.dynamic.map(s => s.raw).join(', ')}`,
                 path,
                 segments: groups.dynamic,
@@ -92,7 +92,7 @@ export function createValidator(): RouteValidator {
         const hasCatchAll = groups.catchAll.length > 0 || groups.optionalCatchAll.length > 0;
         if (groups.dynamic.length > 0 && hasCatchAll) {
             errors.push({
-                type: PatheErrorCode.DYNAMIC_CATCH_CONFLICT,
+                type: RoutingErrorCode.DYNAMIC_CATCH_CONFLICT,
                 message: 'Dynamic segment conflicts with catch-all segment',
                 path,
                 segments: [...groups.dynamic, ...groups.catchAll, ...groups.optionalCatchAll],
@@ -111,7 +111,7 @@ export function createValidator(): RouteValidator {
 
         if (allCatchAll.length > 1) {
             errors.push({
-                type: PatheErrorCode.MULTIPLE_CATCH_ALL,
+                type: RoutingErrorCode.MULTIPLE_CATCH_ALL,
                 message: `Multiple catch-all segments: ${allCatchAll.map(s => s.raw).join(', ')}`,
                 path,
                 segments: allCatchAll,
@@ -182,7 +182,7 @@ export function createValidator(): RouteValidator {
 
                 if (!hasValidComponent && !hasPageInTree(slotNode)) {
                     errors.push({
-                        type: PatheErrorCode.INVALID_SLOT_STRUCTURE,
+                        type: RoutingErrorCode.INVALID_SLOT_STRUCTURE,
                         message: `Parallel route slot '@${slotName}' must contain a 'page' or 'default' component`,
                         path: slotPath,
                         segments: [slotNode.segment],
@@ -201,7 +201,7 @@ export function createValidator(): RouteValidator {
                 // 必须直接包含 page 组件
                 if (!('page' in interceptNode.components)) {
                     errors.push({
-                        type: PatheErrorCode.INVALID_INTERCEPT_STRUCTURE,
+                        type: RoutingErrorCode.INVALID_INTERCEPT_STRUCTURE,
                         message: `Intercept route '${interceptNode.segment.raw}' must contain a 'page' component`,
                         path: interceptPath,
                         segments: [interceptNode.segment],
@@ -217,7 +217,7 @@ export function createValidator(): RouteValidator {
             const hasPage = 'page' in node.components || hasPageInTree(node);
             if (!hasPage) {
                 errors.push({
-                    type: PatheErrorCode.ORPHAN_MIDDLEWARE,
+                    type: RoutingErrorCode.ORPHAN_MIDDLEWARE,
                     message: `Middleware at '${currentPath || '/'}' has no associated page component`,
                     path: currentPath || '/',
                     segments: [node.segment],

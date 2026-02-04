@@ -1,6 +1,6 @@
-import type { Segment } from '@pathe/core/types';
-import type { Context, Resolver, Mapper } from '@pathe/core/adapter';
-import { define } from '@pathe/core/adapter';
+import type { Segment } from '@routing/core/types';
+import type { Context, Resolver, Mapper } from '@routing/core/adapter';
+import { define } from '@routing/core/adapter';
 
 /**
  * Vue 路由记录
@@ -46,7 +46,7 @@ const format = (seg: Segment): string => {
  * 默认元数据
  */
 const defaults = (ctx: Context): unknown => ({
-    pathe: {
+    routing: {
         pattern: ctx.pattern,
         segment: ctx.node.segment,
         layouts: ctx.layouts,
@@ -65,7 +65,7 @@ const defaults = (ctx: Context): unknown => ({
  *
  * @example
  * ```typescript
- * import { adapt } from '@pathe/vue';
+ * import { adapt } from '@routing/vue';
  *
  * const routes = adapt(tree, {
  *     resolve: (path) => () => import(path),

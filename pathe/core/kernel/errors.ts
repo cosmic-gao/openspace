@@ -1,7 +1,7 @@
 /**
  * 错误码枚举
  */
-export const enum PatheErrorCode {
+export const enum RoutingErrorCode {
     // Parser Errors
     INVALID_SEGMENT = 'INVALID_SEGMENT',
 
@@ -23,20 +23,20 @@ export const enum PatheErrorCode {
 }
 
 /**
- * Pathe 错误类
+ * Routing 错误类
  */
-export class PatheError extends Error {
-    public readonly code: PatheErrorCode;
+export class RoutingError extends Error {
+    public readonly code: RoutingErrorCode;
     public readonly context?: unknown;
 
-    constructor(code: PatheErrorCode, message: string, context?: unknown) {
+    constructor(code: RoutingErrorCode, message: string, context?: unknown) {
         super(message);
         this.code = code;
         this.context = context;
-        this.name = 'PatheError';
+        this.name = 'RoutingError';
 
         // 恢复原型链 (针对 ES5 target)
-        Object.setPrototypeOf(this, PatheError.prototype);
+        Object.setPrototypeOf(this, RoutingError.prototype);
     }
 }
 
@@ -47,6 +47,6 @@ export class PatheError extends Error {
  * @param message - 错误消息
  * @param context -虽然上下文
  */
-export function createError(code: PatheErrorCode, message: string, context?: unknown): PatheError {
-    return new PatheError(code, message, context);
+export function createError(code: RoutingErrorCode, message: string, context?: unknown): RoutingError {
+    return new RoutingError(code, message, context);
 }

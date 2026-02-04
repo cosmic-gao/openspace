@@ -1,7 +1,7 @@
 {
-    "name": "@pathe/vue",
+    "name": "@routing/vue",
     "version": "0.0.1",
-    "description": "Vue integration for Pathe",
+    "description": "Vue integration for Routing",
     "type": "module",
     "main": "index.ts",
     "exports": {
@@ -14,8 +14,8 @@
         }
     },
     "peerDependencies": {
-        "@pathe/core": "workspace:*",
-        "@pathe/vite": "workspace:*",
+        "@routing/core": "workspace:*",
+        "@routing/vite": "workspace:*",
         "vite": "^5.0.0 || ^6.0.0",
         "vue-router": "^4.0.0"
     }

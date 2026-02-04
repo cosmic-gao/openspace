@@ -1,7 +1,7 @@
 {
-    "name": "@pathe/react",
+    "name": "@routing/react",
     "version": "0.0.1",
-    "description": "React integration for Pathe",
+    "description": "React integration for Routing",
     "type": "module",
     "main": "index.ts",
     "exports": {
@@ -14,8 +14,8 @@
         }
     },
     "peerDependencies": {
-        "@pathe/core": "workspace:*",
-        "@pathe/vite": "workspace:*",
+        "@routing/core": "workspace:*",
+        "@routing/vite": "workspace:*",
         "vite": "^5.0.0 || ^6.0.0",
         "react-router": "^6.0.0",
         "react-router-dom": "^6.0.0"

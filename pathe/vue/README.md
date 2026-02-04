@@ -1,11 +1,11 @@
-# @pathe/vue
+# @routing/vue
 
-Pathe 的 Vue 集成。提供基于文件系统的路由生成，支持 Vue Router。
+Routing 的 Vue 集成。提供基于文件系统的路由生成，支持 Vue Router。
 
 ## 安装
 
 ```bash
-pnpm add @pathe/vue @pathe/core
+pnpm add @routing/vue @routing/core
 ```
 
 ## Vite 插件
@@ -15,12 +15,12 @@ pnpm add @pathe/vue @pathe/core
 ```typescript
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import pathe from '@pathe/vue/vite';
+import routing from '@routing/vue/vite';
 
 export default defineConfig({
     plugins: [
         vue(),
-        pathe({
+        routing({
             // 路由目录（相对于项目根目录）
             // 默认: 'app'
             dir: 'src/pages',
@@ -34,10 +34,10 @@ export default defineConfig({
 
 ## 类型支持
 
-为了让 TypeScript 识别虚拟模块 `virtual:pathe/routes`，请在 `src/vite-env.d.ts` 中添加引用：
+为了让 TypeScript 识别虚拟模块 `virtual:routing/routes`，请在 `src/vite-env.d.ts` 中添加引用：
 
 ```typescript
-/// <reference types="@pathe/vue/client" />
+/// <reference types="@routing/vue/client" />
 ```
 
 ## 运行时使用
@@ -47,7 +47,7 @@ export default defineConfig({
 ```typescript
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
-import routes from 'virtual:pathe/routes';
+import routes from 'virtual:routing/routes';
 import App from './App.vue';
 
 const router = createRouter({
@@ -60,7 +60,7 @@ createApp(App).use(router).mount('#app');
 
 ## 文件约定
 
-Pathe 自动扫描目标目录下的 `.vue` 文件生成路由。
+Routing 自动扫描目标目录下的 `.vue` 文件生成路由。
 
 | 文件名 | 对应路由 | 备注 |
 | :--- | :--- | :--- |

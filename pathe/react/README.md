@@ -1,11 +1,11 @@
-# @pathe/react
+# @routing/react
 
-Pathe 的 React 集成。提供基于文件系统的路由生成，支持 React Router (v6+).
+Routing 的 React 集成。提供基于文件系统的路由生成，支持 React Router (v6+).
 
 ## 安装
 
 ```bash
-pnpm add @pathe/react @pathe/core
+pnpm add @routing/react @routing/core
 ```
 
 ## Vite 插件
@@ -15,12 +15,12 @@ pnpm add @pathe/react @pathe/core
 ```typescript
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import pathe from '@pathe/react/vite';
+import routing from '@routing/react/vite';
 
 export default defineConfig({
     plugins: [
         react(),
-        pathe({
+        routing({
             // 路由目录（相对于项目根目录）
             // 默认: 'app'
             dir: 'src/routes',
@@ -34,10 +34,10 @@ export default defineConfig({
 
 ## 类型支持
 
-为了让 TypeScript 识别虚拟模块 `virtual:pathe/routes`，请在 `src/vite-env.d.ts` 中添加引用：
+为了让 TypeScript 识别虚拟模块 `virtual:routing/routes`，请在 `src/vite-env.d.ts` 中添加引用：
 
 ```typescript
-/// <reference types="@pathe/react/client" />
+/// <reference types="@routing/react/client" />
 ```
 
 ## 运行时使用
@@ -48,7 +48,7 @@ export default defineConfig({
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import routes from 'virtual:pathe/routes';
+import routes from 'virtual:routing/routes';
 
 const router = createBrowserRouter(routes);
 
@@ -61,7 +61,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 ## 文件约定
 
-Pathe 自动扫描目标目录下的 `.tsx` / `.jsx` 文件生成路由。
+Routing 自动扫描目标目录下的 `.tsx` / `.jsx` 文件生成路由。
 
 | 文件名 | 对应路由 | 备注 |
 | :--- | :--- | :--- |

@@ -1,6 +1,6 @@
-import type { Segment } from '@pathe/core/types';
-import type { Context, Resolver, Mapper } from '@pathe/core/adapter';
-import { define } from '@pathe/core/adapter';
+import type { Segment } from '@routing/core/types';
+import type { Context, Resolver, Mapper } from '@routing/core/adapter';
+import { define } from '@routing/core/adapter';
 
 /**
  * React 路由对象
@@ -48,7 +48,7 @@ const format = (seg: Segment): string => {
  * 默认 handle
  */
 const defaults = (ctx: Context): unknown => ({
-    pathe: {
+    routing: {
         pattern: ctx.pattern,
         segment: ctx.node.segment,
         layouts: ctx.layouts,
@@ -75,7 +75,7 @@ interface Data {
  *
  * @example
  * ```typescript
- * import { adapt } from '@pathe/react';
+ * import { adapt } from '@routing/react';
  *
  * const routes = adapt(tree, {
  *     element: (path) => <Lazy path={path} />,

@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite';
-import type { RouteTree } from '@pathe/core';
+import type { RouteTree } from '@routing/core';
 import * as path from 'node:path';
 
 /**
@@ -55,7 +55,7 @@ export function define(name: string, def: Definition) {
         };
 
         return {
-            name: `pathe:${name}`,
+            name: `routing:${name}`,
 
             resolveId(id) {
                 if (id === virtual) {
@@ -67,7 +67,7 @@ export function define(name: string, def: Definition) {
             async load(id) {
                 if (id !== resolved) return null;
 
-                const { createScanner } = await import('@pathe/core');
+                const { createScanner } = await import('@routing/core');
 
                 if (!ctx.tree) {
                     const scanner = createScanner({
@@ -96,7 +96,7 @@ export function define(name: string, def: Definition) {
                     // 只监听结构性变化，忽略文件内容修改
                     if (!['add', 'unlink'].includes(event)) return;
 
-                    const { createScanner } = await import('@pathe/core');
+                    const { createScanner } = await import('@routing/core');
                     const scanner = createScanner({
                         ignore: options.ignore,
                     });

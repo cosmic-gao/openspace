@@ -1,13 +1,13 @@
-# @pathe/vite
+# @routing/vite
 
-Pathe 的 Vite 插件基础库。提供用于构建不同框架约定的 Vite 插件工厂函数。
+Routing 的 Vite 插件基础库。提供用于构建不同框架约定的 Vite 插件工厂函数。
 
-通常你不需要直接安装这个包，除非你在开发新的框架适配器。应用开发者应该使用 `@pathe/vue` 或 `@pathe/react`。
+通常你不需要直接安装这个包，除非你在开发新的框架适配器。应用开发者应该使用 `@routing/vue` 或 `@routing/react`。
 
 ## 安装
 
 ```bash
-pnpm add @pathe/vite
+pnpm add @routing/vite
 ```
 
 ## 使用方法
@@ -15,7 +15,7 @@ pnpm add @pathe/vite
 ### 创建自定义 Vite 插件
 
 ```typescript
-import { define } from '@pathe/vite';
+import { define } from '@routing/vite';
 import { adapt } from './my-adapter'; // 你的自定义适配器
 
 export const myPlugin = define('my-framework', {
@@ -49,7 +49,7 @@ interface Options {
 
 ### 开发体验（HMR）
 
-`@pathe/vite` 实现了智能的 HMR 策略：
+`@routing/vite` 实现了智能的 HMR 策略：
 
 - **增量更新**：仅当路由文件**新增** (`add`) 或**删除** (`unlink`) 时，才会触发路由表的重新生成。
 - **局部热更**：路由表更新时，通过失效虚拟模块 (`invalidateModule`) 触发热更新，而非强制刷新整个页面 (Full Reload)。这意味着在编辑组件代码时，你可以保持应用状态。

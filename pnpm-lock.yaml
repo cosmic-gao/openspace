@@ -28,13 +28,13 @@ importers:
 
   packages/graph: {}
 
-  pathe/core:
+  routing/core:
     dependencies:
       vite:
         specifier: ^5.0.0 || ^6.0.0
         version: 6.4.1(@types/node@25.2.0)
 
-  pathe/react:
+  routing/react:
     dependencies:
       '@routing/core':
         specifier: workspace:*
@@ -59,7 +59,7 @@ importers:
         specifier: ^19.2.4
         version: 19.2.4
 
-  pathe/vite:
+  routing/vite:
     devDependencies:
       '@routing/core':
         specifier: workspace:*
@@ -68,7 +68,7 @@ importers:
         specifier: ^6.0.0
         version: 6.4.1(@types/node@25.2.0)
 
-  pathe/vue:
+  routing/vue:
     dependencies:
       '@routing/core':
         specifier: workspace:*

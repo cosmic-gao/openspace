@@ -1,4 +1,4 @@
-import type { RouteNode, RouteTree, Segment } from './types';
+import type { RouteNode, RouteTree, Segment } from './types/index.ts';
 
 /**
  * 适配上下文

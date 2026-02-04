@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite';
 import type { RouteTree } from '@routing/core';
 import { define, type Options } from '@routing/vite';
-import { adapt, type Options as AdaptOptions, type Route } from './adapter';
+import { adapt, type Options as AdaptOptions, type Route } from './adapter.ts';
 
 /**
  * 选项
@@ -67,7 +67,7 @@ const generate = (tree: RouteTree, options: AdaptOptions): string => {
 /**
  * 插件
  */
-export default function plugin(options: ReactOptions = {}): Plugin {
+export function routing(options: ReactOptions = {}): Plugin {
     const factory = define('react', {
         id: 'virtual:routing/routes',
         generate: (tree) => generate(tree, options),

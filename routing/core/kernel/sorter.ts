@@ -1,4 +1,4 @@
-import type { RouteNode, SegmentType } from '../types';
+import type { RouteNode, SegmentType } from '../types/index.ts';
 
 /**
  * 段类型优先级映射

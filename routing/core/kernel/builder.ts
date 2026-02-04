@@ -1,4 +1,4 @@
-import type { Segment, Route } from '../types';
+import type { Segment, Route } from '../types/index.ts';
 
 /**
  * 路由构建器接口

@@ -1,4 +1,4 @@
-import type { Segment } from './segment';
+import type { Segment } from './segment.ts';
 
 /**
  * 路由接口

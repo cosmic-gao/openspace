@@ -7,7 +7,7 @@ import {
     type MetaFiles,
     PRESETS,
     ALL_FILES,
-} from './presets';
+} from './presets.ts';
 
 /**
  * 文件约定接口

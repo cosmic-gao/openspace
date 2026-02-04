@@ -1,8 +1,8 @@
-import type { Segment } from './segment';
-import type { RouteFile } from './presets';
+import type { Segment } from './segment.ts';
+import type { RouteFile } from './presets.ts';
 
 // 重新导出 RouteFile 以保持向后兼容
-export type { RouteFile } from './presets';
+export type { RouteFile } from './presets.ts';
 
 /**
  * 路由节点接口

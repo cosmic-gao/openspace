@@ -4,4 +4,4 @@
  * 提供基于文件系统的路由自动生成能力。
  */
 
-export * from './define';
+export * from './define.ts';

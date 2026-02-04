@@ -2,10 +2,10 @@
  * 核心逻辑库
  */
 
-export * from './parser';
-export * from './builder';
-export * from './matcher';
-export * from './validator';
-export * from './serializer';
-export * from './sorter';
-export * from './static';
+export * from './parser.ts';
+export * from './builder.ts';
+export * from './matcher.ts';
+export * from './validator.ts';
+export * from './serializer.ts';
+export * from './sorter.ts';
+export * from './static.ts';

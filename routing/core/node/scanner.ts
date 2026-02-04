@@ -6,9 +6,9 @@ import {
     type RouteNode,
     type RouteTree,
     defineConvention,
-} from '../types';
-import { type SegmentParser, createParser } from '../kernel/parser';
-import { createError, RoutingErrorCode, RoutingError } from '../kernel/errors';
+} from '../types/index.ts';
+import { type SegmentParser, createParser } from '../kernel/parser.ts';
+import { createError, RoutingErrorCode, RoutingError } from '../kernel/errors.ts';
 
 /**
  * 默认文件约定（使用全部预设）

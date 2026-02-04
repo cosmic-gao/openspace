@@ -60,7 +60,7 @@ const generate = (tree: RouteTree, options: AdaptOptions): string => {
 /**
  * 插件
  */
-export default function plugin(options: VueOptions = {}): Plugin {
+export function routing(options: VueOptions = {}): Plugin {
     const factory = define('vue', {
         id: 'virtual:routing/routes',
         generate: (tree) => generate(tree, options),

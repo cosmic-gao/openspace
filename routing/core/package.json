@@ -7,6 +7,11 @@
     "peerDependencies": {
         "vite": "^5.0.0 || ^6.0.0"
     },
+    "exports": {
+        ".": "./index.ts",
+        "./adapter": "./adapter.ts",
+        "./types": "./types/index.ts"
+    },
     "peerDependenciesMeta": {
         "vite": {
             "optional": true

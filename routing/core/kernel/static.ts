@@ -1,5 +1,5 @@
-import type { Route, RouteNode, RouteTree } from '../types';
-import { createBuilder } from './builder';
+import type { Route, RouteNode, RouteTree } from '../types/index.ts';
+import { createBuilder } from './builder.ts';
 
 /**
  * 静态参数接口

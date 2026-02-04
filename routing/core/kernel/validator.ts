@@ -1,5 +1,5 @@
-import type { RouteNode, RouteTree, Segment } from '../types';
-import { RoutingErrorCode } from './errors';
+import type { RouteNode, RouteTree, Segment } from '../types/index.ts';
+import { RoutingErrorCode } from './errors.ts';
 
 /**
  * 验证错误接口

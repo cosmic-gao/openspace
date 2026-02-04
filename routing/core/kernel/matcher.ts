@@ -1,4 +1,4 @@
-import type { Route, RouteMatch } from '../types';
+import type { Route, RouteMatch } from '../types/index.ts';
 
 /**
  * 路由匹配器接口

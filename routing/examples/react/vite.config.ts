@@ -6,6 +6,6 @@ import { routing } from '@routing/react'
 export default defineConfig({
     plugins: [
         react(),
-        routing({ dir: 'src/pages' }),
+        routing(),
     ],
 })

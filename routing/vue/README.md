@@ -22,8 +22,8 @@ export default defineConfig({
         vue(),
         routing({
             // 路由目录（相对于项目根目录）
-            // 默认: 'app'
-            dir: 'src/pages',
+            // 默认: 'pages'
+            dir: 'pages',
             
             // 忽略文件模式
             ignore: ['components', '**/*.test.ts'],

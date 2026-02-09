@@ -47,7 +47,7 @@ export interface Options {
  */
 export function define(name: string, def: Definition) {
     return function plugin(options: Options = {}): Plugin {
-        const dir = options.dir ?? 'app';
+        const dir = options.dir ?? 'pages';
         const virtual = def.id;
         const resolved = '\0' + virtual;
 

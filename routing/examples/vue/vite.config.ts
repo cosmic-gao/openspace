@@ -6,6 +6,6 @@ import { routing } from '@routing/vue'
 export default defineConfig({
     plugins: [
         vue(),
-        routing({ dir: 'src/pages' }),
+        routing(),
     ],
 })

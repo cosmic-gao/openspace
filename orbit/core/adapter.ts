@@ -1,58 +1,67 @@
-/**
- * 适配器工厂
- *
- * 定义宿主/子应用适配器的创建模式
- */
-import type { AdapterOptions } from './types';
+import type { App, Lifecycle } from './types';
 
 /**
- * 适配上下文
+ * 资源加载器
  */
-export interface Context {
-    /** 应用名称 */
-    readonly name: string;
-    /** 应用入口 */
-    readonly entry: string;
-    /** 挂载容器 */
-    readonly container: string | HTMLElement;
+export interface Loader {
+    /**
+     * 加载资源
+     *
+     * @param app - 应用元数据
+     * @returns 加载结果（通常是脚本执行结果或模块导出）
+     */
+    load(app: App): Promise<unknown>;
 }
 
 /**
- * 适配器定义
+ * 沙箱环境
  */
-export interface AdapterDefinition<TResult, TOptions> {
-    /** 加载资源 */
-    load: (ctx: Context, options: TOptions) => Promise<unknown>;
-    /** 创建沙箱 */
-    sandbox?: (ctx: Context, options: TOptions) => unknown;
-    /** 创建生命周期 */
-    lifecycle: (ctx: Context, options: TOptions, loaded: unknown) => TResult;
+export interface Sandbox {
+    /**
+     * 创建沙箱
+     *
+     * @param app - 应用元数据
+     * @returns 沙箱实例
+     */
+    create(app: App): unknown;
+
+    /**
+     * 激活沙箱
+     */
+    active?(): void;
+
+    /**
+     * 销毁沙箱
+     */
+    destroy?(): void;
 }
 
 /**
- * 定义适配器
- *
- * @typeParam TResult - 适配结果类型
- * @typeParam TOptions - 选项类型
- * @param definition - 适配器定义
- * @returns 适配函数
- *
- * @example
- * ```typescript
- * const adapt = define<Lifecycle, Options>({
- *     load: async (ctx) => fetch(ctx.entry),
- *     lifecycle: (ctx, opts, loaded) => ({ mount: () => {}, unmount: () => {} }),
- * });
- * ```
+ * Orbit 插件
  */
-export function define<TResult, TOptions = AdapterOptions>(
-    definition: AdapterDefinition<TResult, TOptions>
-) {
-    return async function adapt(ctx: Context, options: TOptions = {} as TOptions): Promise<TResult> {
-        const loaded = await definition.load(ctx, options);
-        if (definition.sandbox) {
-            definition.sandbox(ctx, options);
-        }
-        return definition.lifecycle(ctx, options, loaded);
-    };
+export interface OrbitPlugin {
+    /** 插件名称 */
+    name: string;
+    /** 安装插件 */
+    install: (orbit: unknown) => void;
+}
+
+/**
+ * 适配器接口
+ *
+ * 组合 Loader 和 Sandbox，负责从资源中提取生命周期
+ */
+export interface Adapter {
+    /** 加载器 */
+    loader: Loader;
+    /** 沙箱（可选） */
+    sandbox?: Sandbox;
+    /**
+     * 获取生命周期
+     *
+     * @param app - 应用元数据
+     * @param loaded - 加载结果
+     * @returns 生命周期钩子
+     */
+    lifecycle(app: App, loaded: unknown): Promise<Lifecycle>;
 }

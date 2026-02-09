@@ -4,98 +4,112 @@
 
 Orbit 是一个现代的、框架无关的微前端协议库。它不绑定于特定的微前端框架（如 qiankun、wujie），而是提供一套通用的"元协议"（Meta-Protocol），用于定义应用生命周期、调度机制和适配接口。
 
-`@orbit/core` 是整个体系的核心，提供底层的调度器、注册表、事件总线和适配器工厂。
+`@orbit/core` 是整个体系的核心，提供底层的调度器、注册表、事件总线和插件机制。
 
 ## 特性
 
-- ⚡ **框架无关**：同时支持 qiankun、wujie、micro-app 等微前端框架
-- 🛠 **高度可控**：提供底层的 Scheduler、Registry、Bus API，满足复杂场景定制
-- 🔌 **可插拔适配**：通过 `define()` 工厂函数创建自定义适配器
+- ⚡ **框架无关**：核心层不依赖任何特定框架实现
+- 🔄 **统一生命周期**：基于 `AppStatus` 的状态机管理，单一事实源
+- 🔌 **插件化架构**：通过 `Adapter` 和 `OrbitPlugin` 扩展加载器、沙箱等能力
+- 🛡 **稳健可靠**：完善的错误处理与事件机制
 - 🔒 **类型安全**：全链路 TypeScript 支持
 
 ## 快速开始
 
-如果你正在使用以下场景，建议查看对应的集成包：
-
-- **宿主应用**: 查看 [@orbit/host](../host/README.md)
-- **子应用**: 查看 [@orbit/remote](../remote/README.md)
-
-## 安装核心包
+### 安装
 
 ```bash
 pnpm add @orbit/core
 ```
 
-## 使用核心功能
-
-### 1. 定义适配器
+### 基础使用
 
 ```typescript
-import { define } from '@orbit/core';
+import { createOrbit } from '@orbit/core';
 
-const adapt = define<Lifecycle, Options>({
-    load: async (ctx) => fetch(ctx.entry),
-    lifecycle: (ctx, opts, loaded) => ({
-        mount: async () => { /* 挂载逻辑 */ },
-        unmount: async () => { /* 卸载逻辑 */ },
-    }),
+// 1. 创建 Orbit 实例
+const orbit = createOrbit({
+    apps: [
+        {
+            name: 'app-1',
+            entry: '//localhost:3001',
+            container: '#sub-app',
+            activeRule: '/app1',
+        }
+    ]
 });
+
+// 2. 监听事件
+orbit.events.on('app:mounted', (app) => {
+    console.log(`App ${app.name} mounted`);
+});
+
+orbit.events.on('error', (err) => {
+    console.error(`Error in ${err.appName} at ${err.status}:`, err);
+});
+
+// 3. 扩展能力 (使用插件)
+// orbit.use(myPlugin);
+
+// 4. 手动调度 (可选)
+// await orbit.mountApp('app-1');
 ```
 
-### 2. 使用注册表
+## 核心概念
+
+### AppStatus
+
+应用状态是系统的核心事实源：
+
+- `NOT_LOADED`
+- `LOADING` / `loaded`
+- `NOT_BOOTSTRAPPED`
+- `BOOTSTRAPPING`
+- `NOT_MOUNTED`
+- `MOUNTING` / `MOUNTED`
+- `UNMOUNTING`
+- `LOAD_ERROR` / `BOOTSTRAP_ERROR` / `MOUNT_ERROR` / `UNMOUNT_ERROR`
+
+### 插件机制
+
+通过插件扩展加载器（Loader）和沙箱（Sandbox）能力：
 
 ```typescript
-import type { Registry } from '@orbit/core';
+import type { OrbitPlugin } from '@orbit/core';
 
-// 注册应用
-registry.register({
-    name: 'sub-app',
-    entry: 'http://localhost:3001',
-    container: '#sub-app',
-    activeRule: '/sub',
-});
+const myPlugin: OrbitPlugin = {
+    name: 'my-plugin',
+    install(orbit) {
+        // 扩展 orbit 功能
+    }
+};
 
-// 获取应用
-const app = registry.get('sub-app');
+orbit.use(myPlugin);
 ```
 
-### 3. 使用事件总线
+## API
 
-```typescript
-import type { Bus } from '@orbit/core';
+### `createOrbit(options)`
 
-// 订阅事件
-bus.on('app:mounted', (payload) => {
-    console.log('应用已挂载:', payload);
-});
+创建 Orbit 内核实例。
 
-// 发布事件
-bus.emit('app:mounted', { name: 'sub-app' });
-```
+### `Orbit` 实例
 
-## 架构说明
+- `registerApps(apps)`: 注册应用
+- `loadApp(name)`: 加载应用
+- `mountApp(name)`: 挂载应用
+- `unmountApp(name)`: 卸载应用
+- `use(plugin)`: 安装插件
+- `events`: 事件中心
 
-Orbit 采用 Monorepo 结构，各包职责如下：
+### Events
 
-| 包名 | 说明 |
-| :--- | :--- |
-| **`@orbit/core`** | 核心协议库。包含 Scheduler、Registry、Bus 等通用逻辑。 |
-| **`@orbit/host`** | 宿主适配器。将协议适配到具体微前端框架。 |
-| **`@orbit/remote`** | 子应用适配器。提供统一的子应用入口。 |
-
-## API 概览
-
-### Main Exports
-
-- `define(definition)`: 定义适配器工厂函数
-- `Scheduler`: 应用调度器接口
-- `Registry`: 应用注册表接口
-- `Bus`: 事件总线接口
-
-### Subpath Exports
-
-- `@orbit/core/adapter`: 适配器类型定义
-- `@orbit/core/types`: 核心类型定义
+- `app:registered`
+- `app:status-change`
+- `app:before-load` / `app:loaded`
+- `app:before-mount` / `app:mounted`
+- `app:before-unmount` / `app:unmounted`
+- `error`
 
 ## License
 

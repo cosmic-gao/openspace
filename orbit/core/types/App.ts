@@ -38,4 +38,18 @@ export type AppStatus =
     | 'UPDATING'
     | 'UNMOUNTING'
     | 'UNLOADING'
-    | 'LOAD_ERROR';
+    | 'LOAD_ERROR'
+    | 'BOOTSTRAP_ERROR'
+    | 'MOUNT_ERROR'
+    | 'UNMOUNT_ERROR'
+    | 'UNLOAD_ERROR';
+
+/**
+ * 应用错误
+ */
+export interface AppError extends Error {
+    /** 错误发生的阶段/状态 */
+    status: AppStatus;
+    /** 关联的应用名称 */
+    appName: string;
+}

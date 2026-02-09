@@ -5,5 +5,6 @@
  */
 
 export * from './types';
-export * from './kernel';
-export * from './adapter';
+export * from './orbit';
+export * from './events';
+// export * from './adapter'; //Adapter will generally be used through plugins or specific implementations

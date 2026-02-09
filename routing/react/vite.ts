@@ -2,6 +2,7 @@ import type { Plugin } from 'vite';
 import type { RouteTree } from '@routing/core';
 import { define, type Options } from '@routing/vite';
 import { adapt, type Options as AdaptOptions, type Route } from './adapter.ts';
+import { normalize } from 'pathe';
 
 /**
  * 选项
@@ -27,9 +28,10 @@ const compile = (routes: readonly Route[]): string => {
         // 处理 Component (Lazy Load)
         if (route.Component) {
             const name = `_c${count++}`;
-            const path = route.Component as string;
+            // 使用 pathe 规范化路径，添加前导斜杠
+            const normalized = '/' + normalize(route.Component as string);
             // React Lazy
-            imports.push(`const ${name} = React.lazy(() => import('${path}'));`);
+            imports.push(`const ${name} = React.lazy(() => import('${normalized}'));`);
             parts.push(`Component: ${name}`);
         }
 
@@ -65,6 +67,11 @@ const generate = (tree: RouteTree, options: AdaptOptions): string => {
 };
 
 /**
+ * React 默认扩展名
+ */
+const REACT_EXTENSIONS = ['.tsx', '.ts', '.jsx', '.js'] as const;
+
+/**
  * 插件
  */
 export function routing(options: ReactOptions = {}): Plugin {
@@ -73,5 +80,5 @@ export function routing(options: ReactOptions = {}): Plugin {
         generate: (tree) => generate(tree, options),
     });
 
-    return factory(options);
+    return factory({ extensions: REACT_EXTENSIONS, ...options });
 }

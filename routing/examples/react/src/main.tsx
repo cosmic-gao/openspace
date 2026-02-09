@@ -5,6 +5,7 @@ import routes from 'virtual:routing/routes'
 import App from './App'
 import './index.css'
 
+
 const router = createBrowserRouter([
     {
         element: <App />,

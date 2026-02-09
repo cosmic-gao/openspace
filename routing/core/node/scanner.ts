@@ -1,5 +1,5 @@
 import { readdir, stat } from 'node:fs/promises';
-import { join, parse as parsePath } from 'node:path';
+import { join, parse } from 'pathe';
 import {
     type FileConvention,
     type RouteFile,
@@ -119,7 +119,7 @@ export function createScanner<T extends string = RouteFile>(
         let middleware: string | undefined;
 
         for (const file of files) {
-            const { name, ext } = parsePath(file.name);
+            const { name, ext } = parse(file.name);
             if (!convention.extensions.includes(ext)) continue;
 
             if ((convention.files as readonly string[]).includes(name)) {

@@ -1,6 +1,7 @@
 import type { Plugin } from 'vite';
 import type { RouteTree } from '@routing/core';
-import * as path from 'node:path';
+import { defineConvention } from '@routing/core';
+import { resolve } from 'pathe';
 
 /**
  * 上下文
@@ -37,6 +38,8 @@ export interface Options {
     readonly dir?: string;
     /** 忽略 */
     readonly ignore?: string[];
+    /** 扩展名 */
+    readonly extensions?: readonly string[];
 }
 
 /**
@@ -70,8 +73,12 @@ export function define(name: string, def: Definition) {
                 const { createScanner } = await import('@routing/core');
 
                 if (!ctx.tree) {
+                    const convention = options.extensions
+                        ? defineConvention({ extensions: options.extensions })
+                        : undefined;
                     const scanner = createScanner({
                         ignore: options.ignore,
+                        convention,
                     });
                     ctx.tree = await scanner.scan(dir);
                     ctx.ready = true;
@@ -83,7 +90,7 @@ export function define(name: string, def: Definition) {
             configureServer(server) {
                 const root = server.config.root;
                 // 确保 dir 是绝对路径，以匹配 watcher 的输出
-                const absDir = path.resolve(root, dir);
+                const absDir = resolve(root, dir);
 
                 server.watcher.add(absDir);
 
@@ -97,8 +104,12 @@ export function define(name: string, def: Definition) {
                     if (!['add', 'unlink'].includes(event)) return;
 
                     const { createScanner } = await import('@routing/core');
+                    const convention = options.extensions
+                        ? defineConvention({ extensions: options.extensions })
+                        : undefined;
                     const scanner = createScanner({
                         ignore: options.ignore,
+                        convention,
                     });
 
                     // 重新扫描

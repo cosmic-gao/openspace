@@ -7,6 +7,9 @@
     "scripts": {
         "test": "vitest"
     },
+    "dependencies": {
+        "pathe": "^2.0.3"
+    },
     "peerDependencies": {
         "vite": "^5.0.0 || ^6.0.0 || ^7.0.0"
     },

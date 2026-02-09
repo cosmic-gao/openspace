@@ -30,6 +30,9 @@ importers:
 
   routing/core:
     dependencies:
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
       vite:
         specifier: ^5.0.0 || ^6.0.0 || ^7.0.0
         version: 7.3.1(@types/node@25.2.0)
@@ -92,6 +95,9 @@ importers:
       '@routing/vite':
         specifier: workspace:*
         version: link:../vite
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
       react-router:
         specifier: ^6.0.0
         version: 6.30.3(react@19.2.4)
@@ -110,6 +116,10 @@ importers:
         version: 19.2.4
 
   routing/vite:
+    dependencies:
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
     devDependencies:
       '@routing/core':
         specifier: workspace:*
@@ -126,6 +136,9 @@ importers:
       '@routing/vite':
         specifier: workspace:*
         version: link:../vite
+      pathe:
+        specifier: ^2.0.3
+        version: 2.0.3
       vite:
         specifier: ^5.0.0 || ^6.0.0 || ^7.0.0
         version: 7.3.1(@types/node@25.2.0)

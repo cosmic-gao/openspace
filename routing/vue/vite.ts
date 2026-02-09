@@ -2,6 +2,7 @@ import type { Plugin } from 'vite';
 import type { RouteTree } from '@routing/core';
 import { define, type Options } from '@routing/vite';
 import { adapt, type Options as AdaptOptions, type Route } from './adapter.ts';
+import { normalize } from 'pathe';
 
 /**
  * 选项
@@ -22,8 +23,9 @@ const compile = (routes: readonly Route[]): string => {
 
         if (route.component) {
             const name = `_c${count++}`;
-            const path = route.component as string;
-            imports.push(`const ${name} = () => import('${path}');`);
+            // 使用 pathe 规范化路径，添加前导斜杠
+            const normalized = '/' + normalize(route.component as string);
+            imports.push(`const ${name} = () => import('${normalized}');`);
             parts.push(`component: ${name}`);
         }
 
@@ -58,6 +60,11 @@ const generate = (tree: RouteTree, options: AdaptOptions): string => {
 };
 
 /**
+ * Vue 默认扩展名
+ */
+const VUE_EXTENSIONS = ['.vue', '.tsx', '.ts', '.jsx', '.js'] as const;
+
+/**
  * 插件
  */
 export function routing(options: VueOptions = {}): Plugin {
@@ -66,5 +73,5 @@ export function routing(options: VueOptions = {}): Plugin {
         generate: (tree) => generate(tree, options),
     });
 
-    return factory(options);
+    return factory({ extensions: VUE_EXTENSIONS, ...options });
 }

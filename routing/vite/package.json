@@ -3,6 +3,9 @@
     "version": "0.0.1",
     "type": "module",
     "main": "index.ts",
+    "dependencies": {
+        "pathe": "^2.0.3"
+    },
     "peerDependencies": {
         "vite": "^5.0.0 || ^6.0.0 || ^7.0.0",
         "@routing/core": "workspace:*"

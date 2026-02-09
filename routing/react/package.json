@@ -13,6 +13,9 @@
             "types": "./client.d.ts"
         }
     },
+    "dependencies": {
+        "pathe": "^2.0.3"
+    },
     "peerDependencies": {
         "@routing/core": "workspace:*",
         "@routing/vite": "workspace:*",

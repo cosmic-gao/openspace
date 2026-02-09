@@ -4,6 +4,9 @@
     "description": "微前端子应用适配规则",
     "type": "module",
     "main": "index.ts",
+    "scripts": {
+        "test": "vitest"
+    },
     "dependencies": {
         "@orbit/core": "workspace:*"
     }

@@ -6,16 +6,39 @@
 
 /**
  * 宿主类型
+ *
+ * - `host`: 作为子应用运行在宿主容器中
+ * - `standalone`: 独立运行
  */
-export type HostType = 'qiankun' | 'wujie' | 'micro-app' | 'standalone';
+export type HostType = 'host' | 'standalone';
 
 /**
- * 扩展 Window 接口
+ * 宿主检测器
+ *
+ * @returns 是否在宿主环境中运行
  */
-interface MicroFrontendWindow extends Window {
-    __POWERED_BY_QIANKUN__?: boolean;
-    __POWERED_BY_WUJIE__?: boolean;
-    __MICRO_APP_ENVIRONMENT__?: boolean;
+export type Detector = () => boolean;
+
+/**
+ * 已注册的检测器列表
+ */
+const detectors: Detector[] = [];
+
+/**
+ * 注册宿主检测器
+ *
+ * @param detector - 检测器函数
+ *
+ * @example
+ * ```typescript
+ * import { register } from '@orbit/remote';
+ *
+ * // 注册自定义检测器
+ * register(() => !!window.MY_CUSTOM_HOST);
+ * ```
+ */
+export function register(detector: Detector): void {
+    detectors.push(detector);
 }
 
 /**
@@ -25,20 +48,17 @@ interface MicroFrontendWindow extends Window {
  *
  * @example
  * ```typescript
- * import { detect } from '@orbit/sub';
+ * import { detect } from '@orbit/remote';
  *
  * const host = detect();
- * if (host === 'qiankun') {
- *     // qiankun 环境
+ * if (host === 'host') {
+ *     // 在宿主容器中运行
  * }
  * ```
  */
 export function detect(): HostType {
-    if (typeof window !== 'undefined') {
-        const w = window as MicroFrontendWindow;
-        if (w.__POWERED_BY_QIANKUN__) return 'qiankun';
-        if (w.__POWERED_BY_WUJIE__) return 'wujie';
-        if (w.__MICRO_APP_ENVIRONMENT__) return 'micro-app';
+    for (const detector of detectors) {
+        if (detector()) return 'host';
     }
     return 'standalone';
 }

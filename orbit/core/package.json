@@ -1,7 +1,15 @@
 {
     "name": "@orbit/core",
     "version": "0.0.1",
-    "description": "微前端核心类型定义、生命周期与适配器接口",
+    "description": "微前端核心协议、抽象与调度",
     "type": "module",
-    "main": "index.ts"
+    "main": "index.ts",
+    "scripts": {
+        "test": "vitest"
+    },
+    "exports": {
+        ".": "./index.ts",
+        "./adapter": "./adapter.ts",
+        "./types": "./types/index.ts"
+    }
 }

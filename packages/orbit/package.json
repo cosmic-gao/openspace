@@ -1,0 +1,7 @@
+{
+    "name": "@openspace/orbit",
+    "version": "0.0.1",
+    "description": "微前端核心运行时与编排引擎",
+    "type": "module",
+    "main": "index.ts"
+}

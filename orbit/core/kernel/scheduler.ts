@@ -1,7 +1,7 @@
 /**
- * 应用调度器接口
+ * 应用调度器
  *
- * 负责监听路由变化并触发应用生命周期
+ * 监听路由变化并触发应用生命周期
  */
 
 /**
@@ -27,7 +27,4 @@ export interface Scheduler {
 /**
  * 调度事件
  */
-export type SchedulerEvent =
-    | 'beforeReroute'
-    | 'afterReroute'
-    | 'noMatch';
+export type SchedulerEvent = 'beforeReroute' | 'afterReroute' | 'noMatch';

@@ -5,4 +5,5 @@
  */
 
 export type { Lifecycle, LifecycleHook } from '@orbit/core';
-export * from './adapters';
+export * from './detect';
+export * from './adapter';

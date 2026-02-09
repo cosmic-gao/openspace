@@ -5,4 +5,4 @@
  */
 
 export type { App, RegisteredApp, Adapter, AdapterOptions } from '@orbit/core';
-export * from './adapters';
+export * from './adapter';

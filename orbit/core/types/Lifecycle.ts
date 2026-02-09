@@ -1,4 +1,4 @@
-import type { App } from './App';
+import type { App } from './app';
 
 /**
  * 生命周期钩子函数签名

@@ -1,5 +1,5 @@
-import type { App } from './App';
-import type { Lifecycle } from './Lifecycle';
+import type { App } from './app';
+import type { Lifecycle } from './lifecycle';
 
 /**
  * 框架适配器接口

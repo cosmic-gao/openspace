@@ -1,0 +1,10 @@
+{
+    "name": "@orbit/host",
+    "version": "0.0.1",
+    "description": "微前端宿主应用运行时",
+    "type": "module",
+    "main": "index.ts",
+    "dependencies": {
+        "@orbit/core": "workspace:*"
+    }
+}

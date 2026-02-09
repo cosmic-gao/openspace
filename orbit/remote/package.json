@@ -1,0 +1,10 @@
+{
+    "name": "@orbit/remote",
+    "version": "0.0.1",
+    "description": "微前端子应用接入 SDK",
+    "type": "module",
+    "main": "index.ts",
+    "dependencies": {
+        "@orbit/core": "workspace:*"
+    }
+}

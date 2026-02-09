@@ -1,4 +1,6 @@
 packages:
-  - "routing/**"
-  - "configs/**"
-  - "packages/**"
+ - "orbit/**"
+ - "routing/**"
+ - "configs/**"
+ - "packages/**"
+ 

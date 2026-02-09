@@ -1,0 +1,7 @@
+{
+    "name": "@orbit/core",
+    "version": "0.0.1",
+    "description": "微前端核心类型定义、生命周期与适配器接口",
+    "type": "module",
+    "main": "index.ts"
+}

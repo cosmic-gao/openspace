@@ -1,0 +1,15 @@
+{
+    "extends": "@openspace/tsconfig/esm",
+    "compilerOptions": {
+        "lib": [
+            "ESNext",
+            "DOM"
+        ]
+    },
+    "include": [
+        "./**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

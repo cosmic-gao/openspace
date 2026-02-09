@@ -26,6 +26,32 @@ importers:
 
   configs/tsconfig: {}
 
+  orbit:
+    dependencies:
+      '@orbit/core':
+        specifier: workspace:*
+        version: link:core
+      '@orbit/host':
+        specifier: workspace:*
+        version: link:host
+      '@orbit/remote':
+        specifier: workspace:*
+        version: link:remote
+
+  orbit/core: {}
+
+  orbit/host:
+    dependencies:
+      '@orbit/core':
+        specifier: workspace:*
+        version: link:../core
+
+  orbit/remote:
+    dependencies:
+      '@orbit/core':
+        specifier: workspace:*
+        version: link:../core
+
   packages/graph: {}
 
   routing/core:

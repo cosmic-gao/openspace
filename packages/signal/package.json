@@ -1,0 +1,10 @@
+{
+  "name": "@openspace/signal",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "index.ts",
+  "devDependencies": {
+    "@openspace/tsconfig": "workspace:*"
+  }
+}

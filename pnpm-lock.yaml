@@ -45,6 +45,12 @@ importers:
 
   packages/graph: {}
 
+  packages/signal:
+    devDependencies:
+      '@openspace/tsconfig':
+        specifier: workspace:*
+        version: link:../../configs/tsconfig
+
   routing/core:
     dependencies:
       pathe:

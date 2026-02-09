@@ -13,11 +13,15 @@ pnpm add @orbit/remote
 ## 使用
 
 ```typescript
-import { defineSub, detect } from '@orbit/remote';
+import { register, detect, defineSub } from '@orbit/remote';
+
+// 注册宿主检测器
+register(() => !!window.__POWERED_BY_QIANKUN__);
+register(() => !!window.__POWERED_BY_WUJIE__);
 
 // 检测宿主环境
 const host = detect();
-console.log('当前宿主:', host); // 'qiankun' | 'wujie' | 'micro-app' | 'standalone'
+console.log('当前宿主:', host); // 'host' | 'standalone'
 
 // 定义子应用
 export const lifecycle = defineSub({
@@ -35,15 +39,28 @@ export const lifecycle = defineSub({
 
 ## API
 
+### `register(detector)`
+
+注册宿主检测器。
+
+**参数**：
+
+- `detector`: `() => boolean` - 检测函数，返回 `true` 表示在宿主环境中
+
+**示例**：
+
+```typescript
+// 注册自定义检测器
+register(() => !!window.MY_CUSTOM_HOST);
+```
+
 ### `detect()`
 
 检测当前宿主类型。
 
 **返回值**：`HostType`
 
-- `'qiankun'`: qiankun 环境
-- `'wujie'`: wujie 环境
-- `'micro-app'`: micro-app 环境
+- `'host'`: 在宿主容器中运行
 - `'standalone'`: 独立运行
 
 ### `defineSub(options)`

@@ -13,7 +13,7 @@ pnpm add @orbit/remote
 ## 使用
 
 ```typescript
-import { register, detect, defineSub } from '@orbit/remote';
+import { register, detect, define } from '@orbit/remote';
 
 // 注册宿主检测器
 register(() => !!window.__POWERED_BY_QIANKUN__);
@@ -24,7 +24,7 @@ const host = detect();
 console.log('当前宿主:', host); // 'host' | 'standalone'
 
 // 定义子应用
-export const lifecycle = defineSub({
+export const lifecycle = define({
     name: 'my-app',
     mount: (container, props) => {
         // 挂载应用
@@ -63,7 +63,7 @@ register(() => !!window.MY_CUSTOM_HOST);
 - `'host'`: 在宿主容器中运行
 - `'standalone'`: 独立运行
 
-### `defineSub(options)`
+### `define(options)`
 
 定义子应用。
 

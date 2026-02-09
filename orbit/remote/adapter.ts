@@ -9,7 +9,7 @@ import { detect } from './detect';
 /**
  * 子应用适配选项
  */
-export interface SubOptions {
+export interface Options {
     /** 应用名称 */
     name: string;
     /** 挂载函数 */
@@ -28,16 +28,16 @@ export interface SubOptions {
  *
  * @example
  * ```typescript
- * import { defineSub } from '@orbit/sub';
+ * import { define } from '@orbit/remote';
  *
- * export const lifecycle = defineSub({
+ * export const lifecycle = define({
  *     name: 'my-app',
  *     mount: (container) => app.mount(container),
  *     unmount: () => app.unmount(),
  * });
  * ```
  */
-export function defineSub(options: SubOptions): Lifecycle {
+export function define(options: Options): Lifecycle {
     // 检测宿主环境（可用于后续适配逻辑）
     detect();
 

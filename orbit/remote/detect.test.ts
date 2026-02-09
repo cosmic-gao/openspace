@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { detect, register, type Detector } from './detect';
+import { detect, register, clearDetectors, type Detector } from './detect';
 
 describe('detect', () => {
     // 保存原始 detectors 状态
@@ -7,10 +7,12 @@ describe('detect', () => {
 
     beforeEach(() => {
         originalWindow = globalThis.window;
+        clearDetectors();
     });
 
     afterEach(() => {
         globalThis.window = originalWindow;
+        clearDetectors();
     });
 
     it('should return "standalone" when no detector registered', () => {

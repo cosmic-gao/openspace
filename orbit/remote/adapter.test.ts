@@ -2,9 +2,9 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { defineSub } from './adapter';
+import { define } from './adapter';
 
-describe('defineSub', () => {
+describe('define', () => {
     let container: HTMLElement;
 
     beforeEach(() => {
@@ -18,7 +18,7 @@ describe('defineSub', () => {
     });
 
     it('should return a Lifecycle object', () => {
-        const lifecycle = defineSub({
+        const lifecycle = define({
             name: 'test-app',
             mount: vi.fn(),
             unmount: vi.fn(),
@@ -31,7 +31,7 @@ describe('defineSub', () => {
 
     it('should call mount with HTMLElement container', async () => {
         const mountFn = vi.fn();
-        const lifecycle = defineSub({
+        const lifecycle = define({
             name: 'test-app',
             mount: mountFn,
             unmount: vi.fn(),
@@ -51,7 +51,7 @@ describe('defineSub', () => {
 
     it('should call mount with string container selector', async () => {
         const mountFn = vi.fn();
-        const lifecycle = defineSub({
+        const lifecycle = define({
             name: 'test-app',
             mount: mountFn,
             unmount: vi.fn(),
@@ -71,7 +71,7 @@ describe('defineSub', () => {
 
     it('should call unmount', async () => {
         const unmountFn = vi.fn();
-        const lifecycle = defineSub({
+        const lifecycle = define({
             name: 'test-app',
             mount: vi.fn(),
             unmount: unmountFn,
@@ -87,7 +87,7 @@ describe('defineSub', () => {
 
     it('should include update when provided', async () => {
         const updateFn = vi.fn();
-        const lifecycle = defineSub({
+        const lifecycle = define({
             name: 'test-app',
             mount: vi.fn(),
             unmount: vi.fn(),
@@ -105,7 +105,7 @@ describe('defineSub', () => {
     });
 
     it('should not include update when not provided', () => {
-        const lifecycle = defineSub({
+        const lifecycle = define({
             name: 'test-app',
             mount: vi.fn(),
             unmount: vi.fn(),

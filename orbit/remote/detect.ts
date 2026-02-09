@@ -42,6 +42,15 @@ export function register(detector: Detector): void {
 }
 
 /**
+ * 清除所有检测器
+ *
+ * @internal 仅用于测试/重置
+ */
+export function clearDetectors(): void {
+    detectors.length = 0;
+}
+
+/**
  * 检测当前宿主类型
  *
  * @returns 宿主类型

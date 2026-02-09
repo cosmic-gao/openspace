@@ -1,5 +1,5 @@
 /**
- * @openspace/orbit-sub
+ * @openspace/orbit-remote
  *
  * 微前端子应用适配规则
  */

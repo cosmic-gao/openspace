@@ -1,8 +1,11 @@
+import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
 function App() {
     return (
-        <Outlet />
+        <Suspense fallback={<div>Loading...</div>}>
+            <Outlet />
+        </Suspense>
     );
 }
 

@@ -1,0 +1,2 @@
+microlet/host/adapter.ts(6,15): error TS2305: Module '"@microlet/core"' has no exported member 'AdapterOptions'.
+microlet/host/index.ts(7,44): error TS2305: Module '"@microlet/core"' has no exported member 'AdapterOptions'.

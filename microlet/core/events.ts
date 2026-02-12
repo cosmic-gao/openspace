@@ -7,7 +7,10 @@ import type { App, AppStatus } from './types';
 /**
  * 核心事件映射表
  */
-export type OrbitEvents = {
+/**
+ * 核心事件映射表
+ */
+export type MicroletEvents = {
     /** 错误事件 */
     error: Error;
     /** 应用注册 */
@@ -37,18 +40,27 @@ export type Handler<T = unknown> = (event: T) => void;
  * 事件中心接口
  */
 export interface EventBus {
-    on<Key extends keyof OrbitEvents>(type: Key, handler: Handler<OrbitEvents[Key]>): void;
-    off<Key extends keyof OrbitEvents>(type: Key, handler: Handler<OrbitEvents[Key]>): void;
-    emit<Key extends keyof OrbitEvents>(type: Key, event: OrbitEvents[Key]): void;
+    on<Key extends keyof MicroletEvents>(type: Key, handler: Handler<MicroletEvents[Key]>): void;
+    off<Key extends keyof MicroletEvents>(type: Key, handler: Handler<MicroletEvents[Key]>): void;
+    emit<Key extends keyof MicroletEvents>(type: Key, event: MicroletEvents[Key]): void;
 }
 
 /**
  * 创建简单的事件中心
  *
+ * @returns 事件总线实例
+ *
  * @internal
+ *
+ * @example
+ * ```typescript
+ * const bus = createEventBus();
+ * bus.on('error', (err) => console.error(err));
+ * bus.emit('error', new Error('Something went wrong'));
+ * ```
  */
 export function createEventBus(): EventBus {
-    const all = new Map<keyof OrbitEvents, Handler[]>();
+    const all = new Map<keyof MicroletEvents, Handler[]>();
 
     return {
         on(type, handler) {
@@ -62,13 +74,22 @@ export function createEventBus(): EventBus {
         off(type, handler) {
             const handlers = all.get(type);
             if (handlers) {
-                handlers.splice(handlers.indexOf(handler as Handler) >>> 0, 1);
+                const index = handlers.indexOf(handler as Handler);
+                if (index !== -1) {
+                    handlers.splice(index, 1);
+                }
             }
         },
         emit(type, event) {
             const handlers = all.get(type);
             if (handlers) {
-                handlers.slice().forEach((handler) => handler(event));
+                for (const handler of handlers.slice()) {
+                    try {
+                        handler(event);
+                    } catch (e) {
+                        console.error(`[Microlet] Error in event handler for "${String(type)}":`, e);
+                    }
+                }
             }
         },
     };

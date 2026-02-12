@@ -1,0 +1,4 @@
+microlet/core/microlet.test.ts(2,23): error TS2307: Cannot find module './orbit' or its corresponding type declarations.
+microlet/core/microlet.test.ts(94,61): error TS7006: Parameter '_app' implicitly has an 'any' type.
+microlet/core/microlet.test.ts(94,67): error TS7006: Parameter 'status' implicitly has an 'any' type.
+microlet/core/microlet.ts(179,32): error TS6133: 'app' is declared but its value is never read.

@@ -1,5 +1,5 @@
 {
-    "name": "@orbit/remote",
+    "name": "@microlet/remote",
     "version": "0.0.1",
     "description": "微前端子应用适配规则",
     "type": "module",
@@ -8,6 +8,6 @@
         "test": "vitest"
     },
     "dependencies": {
-        "@orbit/core": "workspace:*"
+        "@microlet/core": "workspace:*"
     }
 }

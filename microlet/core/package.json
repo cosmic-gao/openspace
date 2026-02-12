@@ -1,5 +1,5 @@
 {
-    "name": "@orbit/core",
+    "name": "@microlet/core",
     "version": "0.0.1",
     "description": "微前端核心协议、抽象与调度",
     "type": "module",

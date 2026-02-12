@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { Orbit } from './orbit';
+import { Microlet } from './microlet';
 import type { App } from './types';
 
-describe('Orbit Kernel', () => {
+describe('Microlet Kernel', () => {
     const mockApp: App = {
         name: 'test-app',
         entry: 'http://localhost:3000',
@@ -11,7 +11,7 @@ describe('Orbit Kernel', () => {
     };
 
     it('should register apps correctly', () => {
-        const orbit = new Orbit();
+        const orbit = new Microlet();
         const onRegistered = vi.fn();
         orbit.events.on('app:registered', onRegistered);
 
@@ -24,7 +24,7 @@ describe('Orbit Kernel', () => {
     });
 
     it('should not register duplicate apps', () => {
-        const orbit = new Orbit();
+        const orbit = new Microlet();
         const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => { });
 
         orbit.registerApps([mockApp]);
@@ -37,7 +37,7 @@ describe('Orbit Kernel', () => {
     });
 
     it('should update app status and emit events', () => {
-        const orbit = new Orbit({ apps: [mockApp] });
+        const orbit = new Microlet({ apps: [mockApp] });
         const onStatusChange = vi.fn();
         orbit.events.on('app:status-change', onStatusChange);
 
@@ -53,7 +53,7 @@ describe('Orbit Kernel', () => {
     });
 
     it('should handle errors and emit events', () => {
-        const orbit = new Orbit({ apps: [mockApp] });
+        const orbit = new Microlet({ apps: [mockApp] });
         const onError = vi.fn();
         orbit.events.on('error', onError);
 
@@ -71,7 +71,7 @@ describe('Orbit Kernel', () => {
     });
 
     it('should transition through lifecycle states', async () => {
-        const orbit = new Orbit({ apps: [mockApp] });
+        const orbit = new Microlet({ apps: [mockApp] });
         const app = orbit.getApp('test-app')!;
 
         // Load
@@ -88,7 +88,7 @@ describe('Orbit Kernel', () => {
     });
 
     it('should handle lifecycle errors', async () => {
-        const orbit = new Orbit({ apps: [mockApp] });
+        const orbit = new Microlet({ apps: [mockApp] });
 
         // Mock load error
         vi.spyOn(orbit, 'setAppStatus').mockImplementation((_app, status) => {
@@ -102,7 +102,7 @@ describe('Orbit Kernel', () => {
         await expect(orbit.loadApp('test-app')).rejects.toThrow('Mock load error');
     });
     it('should install plugins', () => {
-        const orbit = new Orbit();
+        const orbit = new Microlet();
         const plugin = {
             name: 'test-plugin',
             install: vi.fn(),

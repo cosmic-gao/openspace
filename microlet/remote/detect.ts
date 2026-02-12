@@ -31,7 +31,7 @@ const detectors: Detector[] = [];
  *
  * @example
  * ```typescript
- * import { register } from '@orbit/remote';
+ * import { register } from '@microlet/remote';
  *
  * // 注册自定义检测器
  * register(() => !!window.MY_CUSTOM_HOST);
@@ -57,7 +57,7 @@ export function clearDetectors(): void {
  *
  * @example
  * ```typescript
- * import { detect } from '@orbit/remote';
+ * import { detect } from '@microlet/remote';
  *
  * const host = detect();
  * if (host === 'host') {

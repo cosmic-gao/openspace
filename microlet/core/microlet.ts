@@ -1,29 +1,29 @@
 /**
- * Orbit 核心类
+ * Microlet 核心类
  */
 import { createEventBus, type EventBus } from './events';
 import type { App, AppError, AppStatus, RegisteredApp } from './types';
-import type { OrbitPlugin } from './adapter';
+import type { MicroletPlugin } from './adapter';
 
 /**
- * Orbit 配置
+ * Microlet 配置
  */
-export interface OrbitOptions {
+export interface MicroletOptions {
     /** 初始应用列表 */
     apps?: App[];
 }
 
 /**
- * Orbit 实例
+ * Microlet 实例
  */
-export class Orbit {
+export class Microlet {
     /** 事件中心 */
     public readonly events: EventBus = createEventBus();
 
     /** 应用注册表 */
     private readonly apps = new Map<string, RegisteredApp>();
 
-    constructor(options: OrbitOptions = {}) {
+    constructor(options: MicroletOptions = {}) {
         if (options.apps) {
             this.registerApps(options.apps);
         }
@@ -31,11 +31,20 @@ export class Orbit {
 
     /**
      * 注册应用
+     *
+     * @param apps - 应用列表
+     *
+     * @example
+     * ```typescript
+     * microlet.registerApps([
+     *   { name: 'app1', entry: '//localhost:3000', container: '#app' }
+     * ]);
+     * ```
      */
-    public registerApps(apps: App[]) {
+    public registerApps(apps: App[]): void {
         apps.forEach(app => {
             if (this.apps.has(app.name)) {
-                console.warn(`[Orbit] App "${app.name}" is already registered.`);
+                console.warn(`[Microlet] App "${app.name}" is already registered.`);
                 return;
             }
 
@@ -51,6 +60,14 @@ export class Orbit {
 
     /**
      * 获取应用
+     *
+     * @param name - 应用名称
+     * @returns 已注册的应用或 undefined
+     *
+     * @example
+     * ```typescript
+     * const app = microlet.getApp('app1');
+     * ```
      */
     public getApp(name: string): RegisteredApp | undefined {
         return this.apps.get(name);
@@ -58,6 +75,8 @@ export class Orbit {
 
     /**
      * 获取所有应用
+     *
+     * @returns 所有已注册应用的列表
      */
     public getApps(): RegisteredApp[] {
         return Array.from(this.apps.values());
@@ -65,9 +84,13 @@ export class Orbit {
 
     /**
      * 更新应用状态
+     *
+     * @param app - 应用实例
+     * @param status - 新状态
+     *
      * @internal
      */
-    public setAppStatus(app: RegisteredApp, status: AppStatus) {
+    public setAppStatus(app: RegisteredApp, status: AppStatus): void {
         if (app.status === status) return;
 
         const from = app.status;
@@ -82,9 +105,14 @@ export class Orbit {
 
     /**
      * 处理错误
+     *
+     * @param app - 应用实例
+     * @param error - 错误对象
+     * @param status - 错误状态
+     *
      * @internal
      */
-    public handleError(app: RegisteredApp, error: Error, status: AppStatus) {
+    public handleError(app: RegisteredApp, error: Error, status: AppStatus): void {
         const appError: AppError = {
             name: error.name,
             message: error.message,
@@ -96,22 +124,34 @@ export class Orbit {
         this.setAppStatus(app, status);
         this.events.emit('error', appError);
     }
+
     /**
      * 安装插件
+     *
+     * @param plugin - 插件实例
+     * @returns Microlet 实例
+     *
+     * @example
+     * ```typescript
+     * microlet.use(plugin);
+     * ```
      */
-    public use(plugin: OrbitPlugin) {
-        console.log(`[Orbit] Installing plugin "${plugin.name}"`);
+    public use(plugin: MicroletPlugin): this {
+        console.log(`[Microlet] Installing plugin "${plugin.name}"`);
         plugin.install(this);
         return this;
     }
 
     /**
      * 加载应用
+     *
+     * @param name - 应用名称
+     * @throws 如果应用未找到或加载失败
      */
     public async loadApp(name: string): Promise<void> {
         const app = this.getApp(name);
         if (!app) {
-            throw new Error(`[Orbit] App "${name}" not found.`);
+            throw new Error(`[Microlet] App "${name}" not found.`);
         }
 
         if (app.status !== 'NOT_LOADED' && app.status !== 'LOAD_ERROR') {
@@ -122,13 +162,7 @@ export class Orbit {
         this.events.emit('app:before-load', app);
 
         try {
-            // TODO: 调用 Adapter 加载资源
-            // const lifecycle = await this.adapter.load(app);
-            // app.lifecycle = lifecycle;
-
-            // 模拟加载
-            await new Promise(resolve => setTimeout(resolve, 0));
-
+            await this._performLoad(app);
             app.loadTime = Date.now();
             this.setAppStatus(app, 'NOT_BOOTSTRAPPED');
             this.events.emit('app:loaded', app);
@@ -139,11 +173,24 @@ export class Orbit {
     }
 
     /**
+     * 执行实际加载逻辑
+     * @private
+     */
+    private async _performLoad(_app: RegisteredApp): Promise<void> {
+        // TODO: 调用 Adapter 加载资源
+        // 模拟加载
+        await new Promise(resolve => setTimeout(resolve, 0));
+    }
+
+    /**
      * 初始化应用
+     *
+     * @param name - 应用名称
+     * @throws 如果应用未找到或初始化失败
      */
     public async bootstrapApp(name: string): Promise<void> {
         const app = this.getApp(name);
-        if (!app) throw new Error(`[Orbit] App "${name}" not found.`);
+        if (!app) throw new Error(`[Microlet] App "${name}" not found.`);
 
         if (app.status !== 'NOT_BOOTSTRAPPED') {
             if (app.status === 'NOT_LOADED') {
@@ -166,10 +213,13 @@ export class Orbit {
 
     /**
      * 挂载应用
+     *
+     * @param name - 应用名称
+     * @throws 如果应用未找到或挂载失败
      */
     public async mountApp(name: string): Promise<void> {
         const app = this.getApp(name);
-        if (!app) throw new Error(`[Orbit] App "${name}" not found.`);
+        if (!app) throw new Error(`[Microlet] App "${name}" not found.`);
 
         if (app.status !== 'NOT_MOUNTED') {
             await this.bootstrapApp(name);
@@ -190,10 +240,13 @@ export class Orbit {
 
     /**
      * 卸载应用
+     *
+     * @param name - 应用名称
+     * @throws 如果应用未找到或卸载失败
      */
     public async unmountApp(name: string): Promise<void> {
         const app = this.getApp(name);
-        if (!app) throw new Error(`[Orbit] App "${name}" not found.`);
+        if (!app) throw new Error(`[Microlet] App "${name}" not found.`);
 
         if (app.status !== 'MOUNTED') return;
 
@@ -212,8 +265,11 @@ export class Orbit {
 }
 
 /**
- * 创建 Orbit 实例
+ * 创建 Microlet 实例
+ *
+ * @param options - 配置选项
+ * @returns Microlet 实例
  */
-export function createOrbit(options?: OrbitOptions): Orbit {
-    return new Orbit(options);
+export function createMicrolet(options?: MicroletOptions): Microlet {
+    return new Microlet(options);
 }

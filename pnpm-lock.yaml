@@ -29,17 +29,17 @@ importers:
 
   configs/tsconfig: {}
 
-  orbit/core: {}
+  microlet/core: {}
 
-  orbit/host:
+  microlet/host:
     dependencies:
-      '@orbit/core':
+      '@microlet/core':
         specifier: workspace:*
         version: link:../core
 
-  orbit/remote:
+  microlet/remote:
     dependencies:
-      '@orbit/core':
+      '@microlet/core':
         specifier: workspace:*
         version: link:../core
 

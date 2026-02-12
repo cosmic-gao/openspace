@@ -1,5 +1,4 @@
-import type { App } from './app';
-import type { Lifecycle } from './lifecycle';
+import type { App, Lifecycle } from './types';
 
 /**
  * 框架适配器接口
@@ -12,21 +11,21 @@ export interface Adapter {
 
     /**
      * 加载微应用资源
-     * @param app 微应用定义
+     * @param app - 微应用定义
      * @returns 生命周期钩子
      */
     load(app: App): Promise<Lifecycle>;
 
     /**
      * 创建沙箱环境
-     * @param app 微应用定义
+     * @param app - 微应用定义
      * @returns 沙箱实例
      */
     createSandbox?(app: App): Promise<Sandbox>;
 
     /**
      * 销毁沙箱环境
-     * @param sandbox 沙箱实例
+     * @param sandbox - 沙箱实例
      */
     destroySandbox?(sandbox: Sandbox): Promise<void>;
 }
@@ -60,4 +59,27 @@ export interface AdapterOptions {
     cssIsolation?: boolean;
     /** 自定义 fetch 函数 */
     fetch?: typeof fetch;
+}
+
+/**
+ * 资源加载器
+ */
+export interface Loader {
+    /**
+     * 加载资源
+     *
+     * @param app - 应用元数据
+     * @returns 加载结果（通常是脚本执行结果或模块导出）
+     */
+    load(app: App): Promise<unknown>;
+}
+
+/**
+ * Microlet 插件
+ */
+export interface MicroletPlugin {
+    /** 插件名称 */
+    name: string;
+    /** 安装插件 */
+    install: (microlet: unknown) => void;
 }
